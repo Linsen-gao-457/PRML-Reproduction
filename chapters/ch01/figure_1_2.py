@@ -1,6 +1,6 @@
-from pathlib import Path
-
 import matplotlib
+
+from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
 
 matplotlib.use("Agg")
 
@@ -10,8 +10,6 @@ import numpy as np
 from prml.utils.config import load_config
 from prml.utils.plotting import save_figure
 from prml.utils.random import create_rng
-
-ROOT = Path(__file__).resolve().parents[2]
 
 
 def target_function(x):
@@ -41,7 +39,7 @@ def create_figure(x, targets):
 
 
 def run(config_path=None):
-    config_path = ROOT / "configs/ch01/figure_1_2.yaml"
+    config_path = CONFIGS_DIR / "ch01/figure_1_2.yaml"
     config = load_config(config_path)
     rng = create_rng(config["seed"])
     x, targets = generate_data(
@@ -50,7 +48,7 @@ def run(config_path=None):
         rng=rng,
     )
     figure = create_figure(x, targets)
-    output = save_figure(figure, ROOT / config["output"])
+    output = save_figure(figure, PROJECT_ROOT / config["output"])
     plt.close(figure)
     print(f"Saved: {output}")
     return output

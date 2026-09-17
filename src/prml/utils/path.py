@@ -1,0 +1,6 @@
+from pathlib import Path
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+CONFIGS_DIR = PROJECT_ROOT / "configs"
+OUTPUT_DIR = PROJECT_ROOT / "outputs"

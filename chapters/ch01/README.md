@@ -5,5 +5,6 @@ from `configs/ch01/` and writes generated images to `outputs/figures/`.
 
 ```bash
 python -m chapters.ch01 1
+python -m chapters.ch01 4
 python -m chapters.ch01 all
 ```
