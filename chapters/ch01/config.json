@@ -1,0 +1,7 @@
+{
+  "experiment": "1",
+  "seed": 1234,
+  "sample_size": 10,
+  "noise_std": 0.25,
+  "output_dir": "outputs/ch01"
+}
