@@ -1,0 +1,4 @@
+seed: 1234
+sample_size: 10
+noise_std: 1
+output: outputs/figures/figure_1_2.png

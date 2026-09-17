@@ -1,45 +1,30 @@
 import argparse
-import json
-from pathlib import Path
 
-from .experiments import run_data_experiment
+from .figure_1_2 import run as run_figure_1_2
+
+EXPERIMENTS = {
+    "1": ("Running figure 1.2", run_figure_1_2),
+}
 
 
-def main():
-    experiments = {
-        "1": run_data_experiment,
-        # "2": run_polynomial_experiment,
-    }
+def parse_args():
     parser = argparse.ArgumentParser(description="Run PRML Chapter 1 experiments.")
     parser.add_argument(
         "experiment",
-        nargs="?",
-        default=None,
-        choices=["all", *experiments],
-        help="1: reproduce Fig 1.2, all: run all experiments in ch01.",
+        choices=[*EXPERIMENTS, "all"],
+        help="experiment number, or 'all' to run every implemented experiment",
     )
-    args = parser.parse_args()
-    config_path = Path(__file__).with_name("config.json")
+    return parser.parse_args()
 
-    with config_path.open() as file:
-        config = json.load(file)
 
-    # Command argument overriders the configuration.
-    selected = (
-        args.experiment
-        if args.experiment is None
-        else str(config.get("experiment", "all"))
-    )
+def main():
+    selected = parse_args().experiment
+    experiment_numbers = EXPERIMENTS if selected == "all" else [selected]
 
-    if selected != "all" and selected not in experiments:
-        parser.error(f"Unknown configured experiment: {selected!r}")
-    if selected == "all":
-        for number, function in experiments.items():
-            print(f"Running experiment {number}")
-            function(config)
-    else:
-        print(f"Running experiment {selected}")
-        experiments[selected](config)
+    for number in experiment_numbers:
+        description, run = EXPERIMENTS[number]
+        print(f"Running ch01 experiment {number}: {description}")
+        run()
 
 
 if __name__ == "__main__":
