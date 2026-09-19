@@ -5,6 +5,7 @@ from .figure_1_4 import run as run_figure_1_4
 from .figure_1_5 import run as run_figure_1_5
 from .figure_1_6 import run as run_figure_1_6
 from .figure_1_7 import run as run_figure_1_7
+from .figure_1_8 import run as run_figure_1_8
 
 EXPERIMENTS = {
     "1": ("Running figure 1.2", run_figure_1_2),
@@ -12,6 +13,7 @@ EXPERIMENTS = {
     "3": ("Running figure 1.5", run_figure_1_5),
     "4": ("Running figure 1.6", run_figure_1_6),
     "5": ("Running figure 1.7", run_figure_1_7),
+    "6": ("Running figure 1.8", run_figure_1_8),
 }
 
 

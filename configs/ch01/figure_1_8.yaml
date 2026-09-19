@@ -1,0 +1,7 @@
+seed: 1234
+degree: 9
+sample_sizes: [10, 100]
+noise_std: 0.1
+log_regularization_range: [-30, 0]
+num_regularization_values: 200
+output: outputs/figures/figure_1_8.png
