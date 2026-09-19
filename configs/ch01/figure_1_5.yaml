@@ -1,0 +1,5 @@
+seed: 1234
+sample_sizes: [10, 50]
+noise_std: 0.25
+max_degree: 9
+output: outputs/figures/figure_1_5.png
