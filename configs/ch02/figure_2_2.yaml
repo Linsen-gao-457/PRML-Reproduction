@@ -1,0 +1,9 @@
+parameters:
+  - { a: 0.1, b: 0.1 }
+  - { a: 1.0, b: 1.0 }
+  - { a: 2.0, b: 3.0 }
+  - { a: 8.0, b: 4.0 }
+
+grid_points: 1000
+y_max: 3.0
+output: outputs/figures/figure_2_2.png
