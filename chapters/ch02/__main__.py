@@ -1,5 +1,7 @@
 import argparse
 
+from .bernoulli_frequentisist_bayesian import run as run_ber
+
 from .figure_2_2 import run as run_figure_2_2
 
 # from .figure_1_4 import run as run_figure_1_4
@@ -10,7 +12,7 @@ from .figure_2_2 import run as run_figure_2_2
 
 EXPERIMENTS = {
     "1": ("Running figure 2.2", run_figure_2_2),
-    # "2": ("Running figure 1.4", run_figure_1_4),
+    "2": ("Running bayesian and frequentist on Bernoulli distributino", run_ber),
     # "3": ("Running figure 1.5", run_figure_1_5),
     # "4": ("Running figure 1.6", run_figure_1_6),
     # "5": ("Running figure 1.7", run_figure_1_7),
