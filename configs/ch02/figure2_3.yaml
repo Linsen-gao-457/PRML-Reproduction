@@ -1,7 +1,0 @@
-prior:
-a:2
-b:2
-Observation: [1]
-grid_points: 500
-y_max: 2.0
-output: outputs/figures/figure_2_3.png
