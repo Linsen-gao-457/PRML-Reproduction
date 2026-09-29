@@ -24,6 +24,9 @@ def bayesian_ber_example():
     print(f"Posterior a: {posterior_distribution.a}")
     print(f"Posterior b: {posterior_distribution.b}")
     print(f"Posterior mean: {posterior_distribution.mean}")
+    rng = np.random.default_rng(seed=42)
+    simulated_draws = distribution._draw(sample_size=5, rng=rng)
+    print(f"Next 5 simulated draws: {simulated_draws}")
 
 
 def run():
