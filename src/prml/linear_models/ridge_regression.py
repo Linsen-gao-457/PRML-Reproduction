@@ -8,6 +8,7 @@ class RidgeRegression:
         self.regularization = regularization
         self._coef = None
 
+    # X (N,M), N is the batch size, M is the degree of polynomials
     def fit(self, targets, design_matrix):
         design_matrix = np.asarray(design_matrix)
         targets = np.asarray(targets)
