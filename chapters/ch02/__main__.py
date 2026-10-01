@@ -12,8 +12,8 @@ EXPERIMENTS = {
     "1": ("Running figure 2.2", run_1),
     "2": ("Running bayesian and frequentist on Bernoulli distributino", run_2),
     "3": ("Running figure 2.3", run_3),
-    # "4": ("Running figure 1.6", run_figure_1_6),
-    # "5": ("Running figure 1.7", run_figure_1_7),
+    # "4": ("Running figure 2.5", run_4),
+    # "5": ("Running Beta, Dirichlet, and multinomial demo", run_5),
     # "6": ("Running figure 1.8", run_figure_1_8),
 }
 
@@ -34,7 +34,7 @@ def main():
 
     for number in experiment_numbers:
         description, run = EXPERIMENTS[number]
-        print(f"Running ch01 experiment {number}: {description}")
+        print(f"Running ch02 experiment {number}: {description}")
         run()
 
 
