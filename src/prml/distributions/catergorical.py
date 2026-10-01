@@ -1,6 +1,6 @@
 import numpy as np
 
-from .dirichlet import Dirichlet
+# from .dirichlet import Dirichlet
 from .rv import RandonVariable
 
 
@@ -16,6 +16,9 @@ class Categorical(RandonVariable):
 
     @mu.setter
     def mu(self, mu):
+        if mu is None:
+            self.parameters["mu"] = None
+            return
         mu = np.asarray(mu, "float")
         if isinstance(mu, np.ndarray):
             if mu.ndim != 1:
@@ -25,7 +28,7 @@ class Categorical(RandonVariable):
             if not np.allclose(mu.sum(), 1):
                 raise ValueError("sum of mu must be 1")
             self.k_class = mu.size
-            self.mu = mu.copy()
+            self.parameters["mu"] = mu.copy()
 
     @property
     def probabilities(self):
@@ -78,12 +81,51 @@ class Categorical(RandonVariable):
             raise ValueError("Observation canot be empty.")
         if observations.shape[1] < 2:
             raise ValueError("Observations should contain at least two classes.")
-        if observations.shape[1] != self.k_class:
+        if self.k_class is not None and observations.shape[1] != self.k_class:
             raise ValueError(
-                f"expexted {self.k_class} classes,received {observations.shape[1]}"
+                f"expected {self.k_class} classes, received {observations.shape[1]}"
             )
-        if not np.all(observations == 0 | observations == 1):
+        if not np.all((observations == 0) | (observations == 1)):
             raise ValueError("each element of observations should be 0 or 1")
         if not np.all(observations.sum(axis=1) == 1):
             raise ValueError("each obervation must contain one active class")
         return (observations.astype(int), single_obervation_sign)
+
+
+if __name__ == "__main__":
+    print("=== Test Categorical ===")
+
+    # 1. Test initialization
+    categorical = Categorical(mu=np.array([0.2, 0.3, 0.5]))
+
+    # 5. Test sampling
+    rng = np.random.default_rng(1234)
+
+    samples = categorical._draw(
+        sample_size=1000,
+        rng=rng,
+    )
+
+    print(
+        "sample shape:",
+        samples.shape,
+    )
+
+    assert samples.shape == (1000, 3)
+
+    # Every sample must be one-hot
+    assert np.all(samples.sum(axis=1) == 1)
+
+    # Approximate empirical probabilities
+    empirical_probability = samples.mean(axis=0)
+
+    print(
+        "empirical probability:",
+        empirical_probability,
+    )
+
+    np.testing.assert_allclose(
+        empirical_probability,
+        categorical.probabilities,
+        atol=0.05,
+    )
