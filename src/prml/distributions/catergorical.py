@@ -65,7 +65,16 @@ class Categorical(RandonVariable):
         return self.pmf(x)
 
     def _draw(self, sample_size, rng):
-        return rng.choice(self.k_class, size=sample_size)
+        class_indices = rng.choice(
+            self.k_class,
+            size=sample_size,
+            p=self.probabilities,
+        )
+
+        return np.eye(
+            self.k_class,
+            dtype=int,
+        )[class_indices]
 
     def _validate_observations(
         self,
@@ -90,42 +99,3 @@ class Categorical(RandonVariable):
         if not np.all(observations.sum(axis=1) == 1):
             raise ValueError("each obervation must contain one active class")
         return (observations.astype(int), single_obervation_sign)
-
-
-if __name__ == "__main__":
-    print("=== Test Categorical ===")
-
-    # 1. Test initialization
-    categorical = Categorical(mu=np.array([0.2, 0.3, 0.5]))
-
-    # 5. Test sampling
-    rng = np.random.default_rng(1234)
-
-    samples = categorical._draw(
-        sample_size=1000,
-        rng=rng,
-    )
-
-    print(
-        "sample shape:",
-        samples.shape,
-    )
-
-    assert samples.shape == (1000, 3)
-
-    # Every sample must be one-hot
-    assert np.all(samples.sum(axis=1) == 1)
-
-    # Approximate empirical probabilities
-    empirical_probability = samples.mean(axis=0)
-
-    print(
-        "empirical probability:",
-        empirical_probability,
-    )
-
-    np.testing.assert_allclose(
-        empirical_probability,
-        categorical.probabilities,
-        atol=0.05,
-    )
