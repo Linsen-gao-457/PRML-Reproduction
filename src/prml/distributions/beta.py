@@ -1,5 +1,3 @@
-from math import lgamma
-
 import numpy as np
 from scipy.special import gamma
 
