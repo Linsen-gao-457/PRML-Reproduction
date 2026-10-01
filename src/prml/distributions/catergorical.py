@@ -46,16 +46,16 @@ class Categorical(RandonVariable):
         observations, single_observation_sign = self._validate_observations(
             observations=x
         )
-        num_class = observations.sum(axis=0)
         pmf = observations @ self.probabilities
-        if isinstance(num_class, np.ndarray):
-            self.mu = num_class / num_class.sum()
         if single_observation_sign:
             return pmf[0]
         return pmf
 
     def fit(self, observations):
-        pass
+        observations, _ = self._validate_observations(observations)
+        num_class = observations.sum(axis=0)
+        if isinstance(num_class, np.ndarray):
+            self.mu = num_class / num_class.sum()
 
     def _pdf(self, x):
         return self.pmf(x)
