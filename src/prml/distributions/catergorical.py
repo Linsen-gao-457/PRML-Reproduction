@@ -56,6 +56,7 @@ class Categorical(RandonVariable):
         num_class = observations.sum(axis=0)
         if isinstance(num_class, np.ndarray):
             self.mu = num_class / num_class.sum()
+        return self
 
     def _pdf(self, x):
         return self.pmf(x)
