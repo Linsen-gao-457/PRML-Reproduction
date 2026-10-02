@@ -24,10 +24,10 @@ class Dirichlet(RandonVariable):
             raise ValueError("alpha must contain at least two values")
         if value.size < 2:
             raise ValueError("alpha must contain at least 2 values")
-        if not np.any(value <= 0):
+        if np.any(value <= 0):
             raise ValueError("alpha must be positive")
         if not np.all(np.isfinite(value)):
-            raise ValueError("alpha cannot contain finite values")
+            raise ValueError("alpha cannot contain infinite values")
         self.parameters["alpha"] = value.copy()
 
     def _pdf(self, mu):
