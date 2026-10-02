@@ -24,3 +24,9 @@ class Dirichlet(RandonVariable):
         if not np.all(np.isfinite(value)):
             raise ValueError("alpha cannot contain finite values")
         self.parameters["alpha"] = value.copy()
+
+    def _draw(self, sample_size, rng):
+        return rng.dirichlet(
+            self.alpha,
+            size=sample_size,
+        )
