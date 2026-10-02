@@ -45,4 +45,4 @@ class Uniform(RandonVariable):
         return result.item() if result.ndim == 0 else result
 
     def _draw(self, sample_size, rng):
-        return np.random.uniform(low=self.low, high=self.high, size=sample_size)
+        return rng.uniform(low=self.low, high=self.high, size=sample_size)
