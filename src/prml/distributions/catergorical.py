@@ -38,6 +38,8 @@ class Categorical(RandonVariable):
     def probabilities(self):
         if self.mu is None:
             raise RuntimeError("mu is unknown")
+        if isinstance(self.mu, Dirichlet):
+            return self.mu.mean
         return self.mu
 
     @property
@@ -61,8 +63,10 @@ class Categorical(RandonVariable):
     def fit(self, observations):
         observations, _ = self._validate_observations(observations)
         num_class = observations.sum(axis=0)
-        if isinstance(num_class, np.ndarray):
+        if isinstance(self.mu, np.ndarray):
             self.mu = num_class / num_class.sum()
+        elif isinstance(self.mu, Dirichlet):
+            self.mu = Dirichlet(self.mu.alpha + num_class)
         return self
 
     def _pdf(self, x):
