@@ -17,6 +17,10 @@ class Dirichlet(RandonVariable):
     def size(self):
         return self.alpha.size
 
+    @property
+    def mean(self):
+        return self.alpha / self.alpha.sum()
+
     @alpha.setter
     def alpha(self, value):
         value = np.asarray(value, dtype=float)
