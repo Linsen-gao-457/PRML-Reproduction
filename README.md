@@ -1,7 +1,7 @@
 # PRML-Reproduction
 
-Implementations and reproducible figures from *Pattern Recognition and Machine
-Learning*.
+Implementations and reproducible figures from _Pattern Recognition and Machine
+Learning_.
 
 ## Setup
 
@@ -17,9 +17,9 @@ Run figure scripts from the repository root. Configuration lives in the matching
 file under `configs/` and generated images are written to `outputs/figures/`.
 
 ```bash
-python -m chapters.ch01 1
-python -m chapters.ch01 4
 python -m chapters.ch01 all
+python -m chapters.ch02 all
+
 ```
 
 ## Layout
@@ -27,5 +27,4 @@ python -m chapters.ch01 all
 - `src/prml/`: reusable distributions, models, and utilities
 - `chapters/`: scripts and chapter notes
 - `configs/`: reproducibility parameters for each experiment
-- `tests/`: unit tests for reusable implementations
 - `outputs/`: generated figures and numerical results
