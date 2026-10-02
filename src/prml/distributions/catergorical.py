@@ -1,6 +1,6 @@
 import numpy as np
 
-# from .dirichlet import Dirichlet
+from .dirichlet import Dirichlet
 from .rv import RandonVariable
 
 
@@ -18,6 +18,10 @@ class Categorical(RandonVariable):
     def mu(self, mu):
         if mu is None:
             self.parameters["mu"] = None
+            return
+        if isinstance(mu, Dirichlet):
+            self.k_class = mu.size
+            self.parameters["mu"] = mu
             return
         mu = np.asarray(mu, "float")
         if isinstance(mu, np.ndarray):
