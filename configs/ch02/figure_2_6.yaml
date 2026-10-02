@@ -1,0 +1,8 @@
+sample_sizes: [1, 2, 10]
+num_experiments: 100000
+num_bins: 20
+x_min: 0.0
+x_max: 1.0
+y_max: 5.0
+output: outputs/figures/figure_2_6.png
+seed: 1234
