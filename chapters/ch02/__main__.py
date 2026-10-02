@@ -1,6 +1,7 @@
 import argparse
 
 from .bernoulli_frequentisist_bayesian import run as run_2
+from .categorical_dirichlet_bernoulli import run as run_4
 from .figure_2_2 import run as run_1
 from .figure_2_3 import run as run_3
 
@@ -10,9 +11,9 @@ from .figure_2_3 import run as run_3
 
 EXPERIMENTS = {
     "1": ("Running figure 2.2", run_1),
-    "2": ("Running bayesian and frequentist on Bernoulli distributino", run_2),
+    "2": ("Running bayesian and frequentist on Bernoulli distribution", run_2),
     "3": ("Running figure 2.3", run_3),
-    # "4": ("Running figure 2.5", run_4),
+    "4": ("categorical_dirichlet_bernoulli", run_4),
     # "5": ("Running Beta, Dirichlet, and multinomial demo", run_5),
     # "6": ("Running figure 1.8", run_figure_1_8),
 }

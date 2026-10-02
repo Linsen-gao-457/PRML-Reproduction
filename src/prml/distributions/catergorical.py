@@ -1,6 +1,6 @@
 import numpy as np
 
-# from .dirichlet import Dirichlet
+from .dirichlet import Dirichlet
 from .rv import RandonVariable
 
 
@@ -19,6 +19,10 @@ class Categorical(RandonVariable):
         if mu is None:
             self.parameters["mu"] = None
             return
+        if isinstance(mu, Dirichlet):
+            self.k_class = mu.size
+            self.parameters["mu"] = mu
+            return
         mu = np.asarray(mu, "float")
         if isinstance(mu, np.ndarray):
             if mu.ndim != 1:
@@ -34,6 +38,8 @@ class Categorical(RandonVariable):
     def probabilities(self):
         if self.mu is None:
             raise RuntimeError("mu is unknown")
+        if isinstance(self.mu, Dirichlet):
+            return self.mu.mean
         return self.mu
 
     @property
@@ -57,8 +63,10 @@ class Categorical(RandonVariable):
     def fit(self, observations):
         observations, _ = self._validate_observations(observations)
         num_class = observations.sum(axis=0)
-        if isinstance(num_class, np.ndarray):
+        if isinstance(self.mu, np.ndarray):
             self.mu = num_class / num_class.sum()
+        elif isinstance(self.mu, Dirichlet):
+            self.mu = Dirichlet(self.mu.alpha + num_class)
         return self
 
     def _pdf(self, x):
