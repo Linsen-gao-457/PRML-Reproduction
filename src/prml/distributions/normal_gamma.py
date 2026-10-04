@@ -108,15 +108,24 @@ class NormalGamma(RandomVariable):
         precision = x[:, 1]
         if np.any(precision) < 0:
             raise ValueError("precision must be positive")
-        gamma_density = self.b**self.a / gamma(self.a) * precision ** (self.a - 1) np.exp(-self.b * precision)
-        gaussian_density = np.sqrt(self.beta * precision/ (2 * np.pi)) * np.exp(-0.5*self.beta*precision *(mu - self.mu_0)**2)
+        gamma_density = (
+            self.b**self.a
+            / gamma(self.a)
+            * precision ** (self.a - 1)
+            * np.exp(-self.b * precision)
+        )
+        gaussian_density = np.sqrt(self.beta * precision / (2 * np.pi)) * np.exp(
+            -0.5 * self.beta * precision * (mu - self.mu_0) ** 2
+        )
         density = gamma_density * gaussian_density
         return density[0] if single_point_sign else density
 
     def _draw(self, sample_size, rng=None):
         if rng is None:
             rng = np.random.default_rng()
-        precision = rng.gamma(shape =self.a, scale = 1/ self.b, size= sample_size)
-        gaussian_variance = 1/ (self.beta * precision)
-        mean = rng.normal(local= self.mu_0, scale= np.sqrt(gaussian_variance), size= sample_size)
+        precision = rng.gamma(shape=self.a, scale=1 / self.b, size=sample_size)
+        gaussian_variance = 1 / (self.beta * precision)
+        mean = rng.normal(
+            local=self.mu_0, scale=np.sqrt(gaussian_variance), size=sample_size
+        )
         return np.column_stack(mean, precision)
