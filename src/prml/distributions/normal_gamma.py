@@ -120,25 +120,3 @@ class NormalGamma(RandomVariable):
         gaussian_variance = 1/ (self.beta * precision)
         mean = rng.normal(local= self.mu_0, scale= np.sqrt(gaussian_variance), size= sample_size)
         return np.column_stack(mean, precision)
-
-
-
-# def draw(self, sample_size, rng=None):
-#     if rng is None:
-#         rng = np.random.default_rng()
-
-#     precision = rng.gamma(
-#         shape=self.a,
-#         scale=1.0 / self.b,
-#         size=sample_size,
-#     )
-
-#     standard_deviation = np.sqrt(1.0 / (self.beta * precision))
-
-#     mean = rng.normal(
-#         loc=self.m,
-#         scale=standard_deviation,
-#         size=sample_size,
-#     )
-
-#     return np.column_stack((mean, precision))
