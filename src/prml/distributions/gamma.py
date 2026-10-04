@@ -69,4 +69,8 @@ class Gamma(RandonVariable):
         return density.item() if density.ndim == 0 else density
 
     def _draw(self, sample_size, rng):
-        return super()._draw(sample_size, rng)
+        return rng.gamma(
+            shape=self.a,
+            scale=1.0 / self.b,
+            size=sample_size,
+        )
