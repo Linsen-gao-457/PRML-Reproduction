@@ -75,3 +75,67 @@ class Gaussian(RandonVariable):
             raise ValueError("observations must contain only finite values")
 
         return observations
+
+
+class GaussianMeanBayes:
+    def __init__(self, prior, precision):
+        self.prior = prior
+        self.precision = precision
+
+    @property
+    def prior(self):
+        return self._prior
+
+    @prior.setter
+    def prior(self, value):
+        if not isinstance(value, Gaussian):
+            raise TypeError("prior must be Gaussian")
+        self._prior = value
+
+    @property
+    def precision(self):
+        return self._precision
+
+    @precision.setter
+    def precision(self, value):
+        if not np.isscalar(value):
+            raise TypeError("precision must be scalar")
+
+        value = float(value)
+
+        if not np.isfinite(value):
+            raise ValueError("precision must be finite")
+
+        if value <= 0:
+            raise ValueError("precision must be positive")
+
+        self._precision = value
+
+    def fit(self, observations):
+        observations = self._validate_obserbations(observations)
+        n = observations.size
+        mu_ml = observations.mean()
+        prior_precision = 1 / (self.prior.standard_deviation**2)
+        posterior_precision = prior_precision + n * self.precision
+        posterior_standard_deviation = np.sqrt(1.0 / posterior_precision)
+        posterior_mu = (
+            prior_precision * self.prior.mean + n * self.precision * mu_ml
+        ) / posterior_precision
+        return Gaussian(
+            mean=posterior_mu,
+            standard_deviation=posterior_standard_deviation,
+        )
+
+    @staticmethod
+    def _validate_obserbations(observations):
+        try:
+            observations = np.asarray(observations, dtype=float)
+        except (TypeError, ValueError) as error:
+            raise TypeError("observations must be numeric") from error
+        if observations.ndim != 1:
+            raise TypeError("observations must be one-dimensional")
+        if observations.size == 0:
+            raise ValueError("observation cannot be empty")
+        if not np.all(np.isfinite(observations)):
+            raise ValueError("observations must contain only finite values")
+        return observations
