@@ -4,7 +4,7 @@ from .rv import RandonVariable
 
 
 class Gaussian(RandonVariable):
-    def __init__(self, mean, standard_deviation):
+    def __init__(self, mean=None, standard_deviation=None):
         super().__init__()
         self.mean = mean
         self.standard_deviation = standard_deviation
@@ -16,7 +16,8 @@ class Gaussian(RandonVariable):
     @mean.setter
     def mean(self, value):
         if value == None:
-            raise TypeError("mean cannot be None")
+            self.parameters["mean"] = None
+            return
         if not np.isscalar(value):
             raise TypeError("value msut be a scalar")
         if not np.isfinite(value):
@@ -30,7 +31,8 @@ class Gaussian(RandonVariable):
     @standard_deviation.setter
     def standard_deviation(self, value):
         if value == None:
-            raise TypeError("standard_deviation cannot be None")
+            self.parameters["standard_deviation"] = None
+            return
         if not np.isscalar(value):
             raise TypeError("value must be scalar")
         if not np.isfinite(value):
@@ -46,4 +48,12 @@ class Gaussian(RandonVariable):
         return density
 
     def _draw(self, sample_size, rng):
+        self._check_fitted()
         return rng.normal(self.mean, self.standard_deviation, sample_size)
+
+    def fit(self, observartions):
+        pass
+
+    def _check_fitted(self):
+        if self.mean == None or self.standard_deviation == None:
+            raise RuntimeError("gaussian parameters are unknow; call fit first")
