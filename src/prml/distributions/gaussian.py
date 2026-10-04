@@ -42,18 +42,17 @@ class Gaussian(RandonVariable):
         self.parameters["standard_deviation"] = float(value)
 
     def _pdf(self, x):
-        self._check_fitted()
+        if self.mean == None or self.standard_deviation == None:
+            raise RuntimeError("gaussian parameters are unknow; call fit first")
         normalization = 1 / (np.sqrt(2 * np.pi * self.standard_deviation**2))
         exponent = np.exp(-1 / (2 * self.standard_deviation**2) * (x - self.mean) ** 2)
         density = normalization * exponent
         return density
 
     def _draw(self, sample_size, rng):
+        if self.mean == None or self.standard_deviation == None:
+            raise RuntimeError("gaussian parameters are unknow; call fit first")
         return rng.normal(self.mean, self.standard_deviation, sample_size)
 
     def fit(self, observartions):
         pass
-
-    def _check_fitted(self):
-        if self.mean == None or self.standard_deviation == None:
-            raise RuntimeError("gaussian parameters are unknow; call fit first")
