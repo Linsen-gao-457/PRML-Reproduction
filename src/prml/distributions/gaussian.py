@@ -205,7 +205,7 @@ class GaussianMeanPrecisionBayes:
     """Infer an unknown Gaussian mean and precision with a conjugate prior."""
 
     def __init__(self, prior):
-        self._prior = prior
+        self.prior = prior
 
     @property
     def prior(self):
