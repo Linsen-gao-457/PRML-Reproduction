@@ -213,7 +213,7 @@ class GaussianMeanPrecisionBayes:
 
     @prior.setter
     def prior(self, value):
-        if isinstance(value, NormalGamma):
+        if not isinstance(value, NormalGamma):
             raise TypeError("prior must be NormalGamma")
         self._prior = value
 
