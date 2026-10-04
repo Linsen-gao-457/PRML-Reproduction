@@ -221,7 +221,7 @@ class GaussianMeanPrecisionBayes:
         observations = self._validate_observations(observations)
 
         posterior_c = self.prior.c + observations.sum()
-        posterior_beta = self.beta + observations.size
+        posterior_beta = self.prior.beta + observations.size
         posterior_d = self.prior.d + 0.5 * np.dot(observations, observations)
 
         return NormalGamma.form_constraints(
