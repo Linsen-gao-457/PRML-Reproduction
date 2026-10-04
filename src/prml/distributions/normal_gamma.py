@@ -1,10 +1,10 @@
 import numpy as np
 from scipy.special import gamma
 
-from .rv import RandomVariable
+from .rv import RandonVariable
 
 
-class NormalGamma(RandomVariable):
+class NormalGamma(RandonVariable):
     def __init__(self, beta, mu_0, a, b):
         super().__init__()
         self.mu_0 = mu_0
@@ -14,9 +14,18 @@ class NormalGamma(RandomVariable):
 
     @classmethod
     def form_constraints(cls, c, beta, d):
+        if not np.isscalar(c) or not np.isscalar(beta) or not np.isscalar(d):
+            raise TypeError("c, beta, and d must be scalars")
+        c, beta, d = float(c), float(beta), float(d)
+        if not np.all(np.isfinite([c, beta, d])):
+            raise ValueError("c, beta, and d must be finite")
+        if beta <= 0:
+            raise ValueError("beta must be positive")
         mu_0 = c / beta
         a = 1 + beta / 2
         b = d - c**2 / (2 * beta)
+        if b <= 0:
+            raise ValueError("d must be greater than c**2 / (2 * beta)")
         return cls(beta=beta, mu_0=mu_0, a=a, b=b)
 
     @property
@@ -99,15 +108,18 @@ class NormalGamma(RandomVariable):
     def _pdf(self, x):
         x = np.asarray(x, dtype=float)
         single_point_sign = x.ndim == 1
-        if single_point_sign and x.shape != (2,):
-            raise ValueError("single point must have shape (2, )")
+        if single_point_sign:
+            if x.shape != (2,):
+                raise ValueError("single point must have shape (2, )")
+            x = x[None, :]
         if x.ndim != 2 or x.shape[1] != 2:
             raise ValueError("value must have shape (N,2)")
 
         mu = x[:, 0]
         precision = x[:, 1]
-        if np.any(precision) < 0:
-            raise ValueError("precision must be positive")
+        density = np.zeros(x.shape[0], dtype=float)
+        valid = precision > 0
+        precision = precision[valid]
         gamma_density = (
             self.b**self.a
             / gamma(self.a)
@@ -115,9 +127,9 @@ class NormalGamma(RandomVariable):
             * np.exp(-self.b * precision)
         )
         gaussian_density = np.sqrt(self.beta * precision / (2 * np.pi)) * np.exp(
-            -0.5 * self.beta * precision * (mu - self.mu_0) ** 2
+            -0.5 * self.beta * precision * (mu[valid] - self.mu_0) ** 2
         )
-        density = gamma_density * gaussian_density
+        density[valid] = gamma_density * gaussian_density
         return density[0] if single_point_sign else density
 
     def _draw(self, sample_size, rng=None):
@@ -126,6 +138,6 @@ class NormalGamma(RandomVariable):
         precision = rng.gamma(shape=self.a, scale=1 / self.b, size=sample_size)
         gaussian_variance = 1 / (self.beta * precision)
         mean = rng.normal(
-            local=self.mu_0, scale=np.sqrt(gaussian_variance), size=sample_size
+            loc=self.mu_0, scale=np.sqrt(gaussian_variance), size=sample_size
         )
-        return np.column_stack(mean, precision)
+        return np.column_stack((mean, precision))
