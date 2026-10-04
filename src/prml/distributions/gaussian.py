@@ -55,4 +55,23 @@ class Gaussian(RandonVariable):
         return rng.normal(self.mean, self.standard_deviation, sample_size)
 
     def fit(self, observartions):
-        pass
+        observartions = self._validate_observations(observations=observartions)
+        self.mean = np.mean(observartions)
+        fitted_varaince = np.var(observartions, ddof=1)
+        self.standard_deviation = np.sqrt(fitted_varaince)
+        return self
+
+    @staticmethod
+    def _validate_observations(observations):
+        observations = np.asarray(observations, dtype=float)
+
+        if observations.ndim != 1:
+            raise ValueError("observations must be one-dimensional")
+
+        if observations.size < 2:
+            raise ValueError("at least two observations are required")
+
+        if not np.all(np.isfinite(observations)):
+            raise ValueError("observations must contain only finite values")
+
+        return observations
