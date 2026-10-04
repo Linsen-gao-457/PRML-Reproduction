@@ -44,4 +44,4 @@ class Gaussian(RandonVariable):
         return density
 
     def _draw(self, sample_size, rng):
-        return rng.normal(self.mean, np.self.standard_deviation, sample_size)
+        return rng.normal(self.mean, self.standard_deviation, sample_size)
