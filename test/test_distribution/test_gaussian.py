@@ -158,7 +158,6 @@ def test_empirical_mean_and_standard_deviation():
 @pytest.mark.parametrize(
     "mean",
     [
-        None,
         [0.0],
         np.array([0.0]),
         "0.0",
@@ -191,7 +190,6 @@ def test_nonfinite_mean(mean):
 @pytest.mark.parametrize(
     "standard_deviation",
     [
-        None,
         [1.0],
         np.array([1.0]),
         "1.0",
@@ -220,3 +218,23 @@ def test_invalid_standard_deviation_value(standard_deviation):
             mean=0.0,
             standard_deviation=standard_deviation,
         )
+
+
+def test_fit_returns_self():
+    gaussian = Gaussian()
+
+    result = gaussian.fit([1.0, 2.0, 3.0])
+
+    assert result is gaussian
+
+
+def test_fit_known_values():
+    gaussian = Gaussian()
+
+    gaussian.fit([1.0, 2.0, 3.0])
+
+    expected_mean = 2.0
+    expected_standard_deviation = np.sqrt(1)
+
+    assert gaussian.mean == pytest.approx(expected_mean)
+    assert gaussian.standard_deviation == pytest.approx(expected_standard_deviation)
