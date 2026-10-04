@@ -112,30 +112,11 @@ class NormalGamma(RandomVariable):
         gaussian_density = np.sqrt(self.beta * precision/ (2 * np.pi)) * np.exp(-0.5*self.beta*precision *(mu - self.mu_0)**2)
         density = gamma_density * gaussian_density
         return density[0] if single_point_sign else density
-        
+
     def _draw(self, sample_size, rng=None):
         pass
 
 
-# def _pdf(self, value):
-
-#     gamma_density = (
-#         self.b**self.a
-#         / np.math.gamma(self.a)
-#         * precision ** (self.a - 1)
-#         * np.exp(-self.b * precision)
-#     )
-
-#     gaussian_density = np.sqrt(self.beta * precision / (2.0 * np.pi)) * np.exp(
-#         -0.5 * self.beta * precision * (mu - self.m) ** 2
-#     )
-
-#     density = gaussian_density * gamma_density
-
-#     if single_point:
-#         return density[0]
-
-#     return density
 
 # def draw(self, sample_size, rng=None):
 #     if rng is None:
