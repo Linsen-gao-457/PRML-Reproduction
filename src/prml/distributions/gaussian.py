@@ -175,8 +175,8 @@ class GaussianPrecisionBayes:
         observations = self._validate_observations(observations)
         n = observations.size
         square_error = np.sum(observations - observations.mean) ** 2
-        a = self.a + n / 2
-        b = self.b + n / 2 * square_error
+        a = self.prior.a + n / 2
+        b = self.prior.b + n / 2 * square_error
         return Gamma(a=a, b=b)
 
     @staticmethod
