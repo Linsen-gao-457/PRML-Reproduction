@@ -114,7 +114,12 @@ class NormalGamma(RandomVariable):
         return density[0] if single_point_sign else density
 
     def _draw(self, sample_size, rng=None):
-        pass
+        if rng is None:
+            rng = np.random.default_rng()
+        precision = rng.gamma(shape =self.a, scale = 1/ self.b, size= sample_size)
+        gaussian_variance = 1/ (self.beta * precision)
+        mean = rng.normal(local= self.mu_0, scale= np.sqrt(gaussian_variance), size= sample_size)
+        return np.column_stack(mean, precision)
 
 
 
