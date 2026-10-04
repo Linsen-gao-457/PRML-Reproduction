@@ -4,7 +4,7 @@ from .rv import RandonVariable
 
 
 class Gaussian(RandonVariable):
-    def __init__(self, mean, standard_deviation):
+    def __init__(self, mean=None, standard_deviation=None):
         super().__init__()
         self.mean = mean
         self.standard_deviation = standard_deviation
@@ -16,7 +16,8 @@ class Gaussian(RandonVariable):
     @mean.setter
     def mean(self, value):
         if value == None:
-            raise TypeError("mean cannot be None")
+            self.parameters["mean"] = None
+            return
         if not np.isscalar(value):
             raise TypeError("value msut be a scalar")
         if not np.isfinite(value):
@@ -30,18 +31,47 @@ class Gaussian(RandonVariable):
     @standard_deviation.setter
     def standard_deviation(self, value):
         if value == None:
-            raise TypeError("standard_deviation cannot be None")
+            self.parameters["standard_deviation"] = None
+            return
         if not np.isscalar(value):
             raise TypeError("value must be scalar")
+        if not np.isfinite(value):
+            raise ValueError("value must be finite")
         if value <= 0:
             raise ValueError("standard_deviation cannot be non-positive")
         self.parameters["standard_deviation"] = float(value)
 
     def _pdf(self, x):
+        if self.mean == None or self.standard_deviation == None:
+            raise RuntimeError("gaussian parameters are unknow; call fit first")
         normalization = 1 / (np.sqrt(2 * np.pi * self.standard_deviation**2))
         exponent = np.exp(-1 / (2 * self.standard_deviation**2) * (x - self.mean) ** 2)
         density = normalization * exponent
         return density
 
     def _draw(self, sample_size, rng):
-        return rng.normal(self.mean, np.self.standard_deviation, sample_size)
+        if self.mean == None or self.standard_deviation == None:
+            raise RuntimeError("gaussian parameters are unknow; call fit first")
+        return rng.normal(self.mean, self.standard_deviation, sample_size)
+
+    def fit(self, observartions):
+        observartions = self._validate_observations(observations=observartions)
+        self.mean = np.mean(observartions)
+        fitted_varaince = np.var(observartions, ddof=1)
+        self.standard_deviation = np.sqrt(fitted_varaince)
+        return self
+
+    @staticmethod
+    def _validate_observations(observations):
+        observations = np.asarray(observations, dtype=float)
+
+        if observations.ndim != 1:
+            raise ValueError("observations must be one-dimensional")
+
+        if observations.size < 2:
+            raise ValueError("at least two observations are required")
+
+        if not np.all(np.isfinite(observations)):
+            raise ValueError("observations must contain only finite values")
+
+        return observations
