@@ -1,6 +1,7 @@
 import numpy as np
 
 from .rv import RandonVariable
+from .gamma import Gamma
 
 
 class Gaussian(RandonVariable):
@@ -138,4 +139,62 @@ class GaussianMeanBayes:
             raise ValueError("observation cannot be empty")
         if not np.all(np.isfinite(observations)):
             raise ValueError("observations must contain only finite values")
+        return observations
+
+
+class GaussianPrecisionBayes:
+    def __init__(self, mean, prior):
+        self.mean = mean
+        self.prior = prior
+
+    @property
+    def mean(self):
+        return self._mean
+
+    @mean.setter
+    def mean(self, value):
+        if not np.isscalar(value):
+            raise TypeError("mean must be a scalar")
+        value = float(self.value)
+        if not np.isfinite(value):
+            raise ValueError("mean must be finite")
+        self._mean = value
+
+    @property
+    def prior(self):
+        return self._prior
+
+    @prior.setter
+    def prior(self, value):
+        if not isinstance(value, Gamma):
+            raise TypeError("prior must follow Gamma distribution")
+        self._prior = value
+
+    def fit(self, observations):
+        observations = self._validate_observations(observations)
+        n = observations.size
+        square_error = np.sum(observations - observations.mean) ** 2
+        a = self.a + n / 2
+        b = self.b + n / 2 * square_error
+        return Gamma(a=a, b=b)
+
+    @staticmethod
+    def _validate_observations(observations):
+        try:
+            observations = np.asarray(
+                observations,
+                dtype=float,
+            )
+        except (TypeError, ValueError) as exc:
+            raise TypeError("observations must contain numeric values") from exc
+
+        if observations.ndim != 1:
+            raise ValueError("observations must be one-dimensional")
+
+        if observations.size == 0:
+            raise ValueError("observations cannot be empty")
+
+        if not np.all(np.isfinite(observations)):
+            raise ValueError("observations must contain only finite values")
+
         return observations
