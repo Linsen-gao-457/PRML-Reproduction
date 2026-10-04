@@ -204,24 +204,25 @@ class GaussianPrecisionBayes:
 class GaussianMeanPrecisionBayes:
     """Infer an unknown Gaussian mean and precision with a conjugate prior."""
 
-    def __init__(self, c, beta, d):
-        # Constructing the prior here also validates the three constraints.
-        prior = NormalGamma.form_constraints(c=c, beta=beta, d=d)
-        self.c = float(c)
-        self.beta = float(beta)
-        self.d = float(d)
+    def __init__(self, prior):
         self._prior = prior
 
     @property
     def prior(self):
         return self._prior
 
+    @prior.setter
+    def prior(self, value):
+        if isinstance(value, NormalGamma):
+            raise TypeError("prior must be NormalGamma")
+        self._prior = value
+
     def fit(self, observations):
         observations = self._validate_observations(observations)
 
-        posterior_c = self.c + observations.sum()
+        posterior_c = self.prior.c + observations.sum()
         posterior_beta = self.beta + observations.size
-        posterior_d = self.d + 0.5 * np.dot(observations, observations)
+        posterior_d = self.prior.d + 0.5 * np.dot(observations, observations)
 
         return NormalGamma.form_constraints(
             c=posterior_c,
