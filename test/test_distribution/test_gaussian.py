@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from scipy.stats import norm
 
-from prml.distributions.gaussian import Gaussian
+from prml.distributions.gaussian import Gaussian, GaussianMeanBayes
 
 
 def test_initialization():
@@ -238,3 +238,138 @@ def test_fit_known_values():
 
     assert gaussian.mean == pytest.approx(expected_mean)
     assert gaussian.standard_deviation == pytest.approx(expected_standard_deviation)
+
+
+def test_gaussian_mean_bayes_fit_known_values():
+    prior = Gaussian(
+        mean=0.0,
+        standard_deviation=1.0,
+    )
+
+    model = GaussianMeanBayes(
+        prior=prior,
+        precision=1.0,
+    )
+
+    posterior = model.fit([2.0, 4.0])
+
+    assert posterior.mean == pytest.approx(2.0)
+    assert posterior.standard_deviation == pytest.approx(np.sqrt(1.0 / 3.0))
+
+
+def test_gaussian_mean_bayes_fit_returns_gaussian():
+    prior = Gaussian(
+        mean=0.0,
+        standard_deviation=1.0,
+    )
+
+    model = GaussianMeanBayes(
+        prior=prior,
+        precision=1.0,
+    )
+
+    posterior = model.fit([2.0, 4.0])
+
+    assert isinstance(posterior, Gaussian)
+
+
+def test_gaussian_mean_bayes_does_not_modify_prior():
+    prior = Gaussian(
+        mean=0.0,
+        standard_deviation=1.0,
+    )
+
+    model = GaussianMeanBayes(
+        prior=prior,
+        precision=1.0,
+    )
+
+    model.fit([2.0, 4.0])
+
+    assert prior.mean == 0.0
+    assert prior.standard_deviation == 1.0
+
+
+def test_gaussian_mean_bayes_accepts_single_observation():
+    prior = Gaussian(
+        mean=0.0,
+        standard_deviation=1.0,
+    )
+
+    model = GaussianMeanBayes(
+        prior=prior,
+        precision=1.0,
+    )
+
+    posterior = model.fit([2.0])
+
+    assert posterior.mean == pytest.approx(1.0)
+    assert posterior.standard_deviation == pytest.approx(np.sqrt(1.0 / 2.0))
+
+
+@pytest.mark.parametrize(
+    "observations",
+    [
+        [],
+        [[1.0, 2.0]],
+        [[1.0], [2.0]],
+        [1.0, np.nan],
+        [1.0, np.inf],
+        [1.0, -np.inf],
+    ],
+)
+def test_gaussian_mean_bayes_rejects_invalid_observations(observations):
+    prior = Gaussian(
+        mean=0.0,
+        standard_deviation=1.0,
+    )
+    model = GaussianMeanBayes(
+        prior=prior,
+        precision=1.0,
+    )
+
+    with pytest.raises((TypeError, ValueError)):
+        model.fit(observations)
+
+
+@pytest.mark.parametrize(
+    "observations",
+    [
+        ["a", "b"],
+        [1.0, "a"],
+    ],
+)
+def test_gaussian_mean_bayes_rejects_non_numeric_observations(observations):
+    prior = Gaussian(
+        mean=0.0,
+        standard_deviation=1.0,
+    )
+    model = GaussianMeanBayes(
+        prior=prior,
+        precision=1.0,
+    )
+
+    with pytest.raises(TypeError):
+        model.fit(observations)
+
+
+def test_stronger_observation_precision_moves_posterior_toward_data():
+    prior = Gaussian(
+        mean=0.0,
+        standard_deviation=1.0,
+    )
+
+    weak_data = GaussianMeanBayes(
+        prior=prior,
+        precision=0.1,
+    )
+
+    strong_data = GaussianMeanBayes(
+        prior=prior,
+        precision=10.0,
+    )
+
+    weak_posterior = weak_data.fit([10.0])
+    strong_posterior = strong_data.fit([10.0])
+
+    assert strong_posterior.mean > weak_posterior.mean
