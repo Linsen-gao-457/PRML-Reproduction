@@ -105,6 +105,14 @@ class NormalGamma(RandonVariable):
 
         self.parameters["b"] = value
 
+    @property
+    def c(self):
+        return self.beta * self.mu_0
+
+    @property
+    def d(self):
+        return self.b + self.c**2 / (2.0 * self.beta)
+
     def _pdf(self, x):
         x = np.asarray(x, dtype=float)
         single_point_sign = x.ndim == 1
