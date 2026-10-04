@@ -33,6 +33,8 @@ class Gaussian(RandonVariable):
             raise TypeError("standard_deviation cannot be None")
         if not np.isscalar(value):
             raise TypeError("value must be scalar")
+        if not np.isfinite(value):
+            raise ValueError("value must be finite")
         if value <= 0:
             raise ValueError("standard_deviation cannot be non-positive")
         self.parameters["standard_deviation"] = float(value)
