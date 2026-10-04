@@ -1,7 +1,8 @@
 import numpy as np
 
-from .rv import RandonVariable
 from .gamma import Gamma
+from .normal_gamma import NormalGamma
+from .rv import RandonVariable
 
 
 class Gaussian(RandonVariable):
@@ -197,4 +198,47 @@ class GaussianPrecisionBayes:
         if not np.all(np.isfinite(observations)):
             raise ValueError("observations must contain only finite values")
 
+        return observations
+
+
+class GaussianMeanPrecisionBayes:
+    """Infer an unknown Gaussian mean and precision with a conjugate prior."""
+
+    def __init__(self, c, beta, d):
+        # Constructing the prior here also validates the three constraints.
+        prior = NormalGamma.form_constraints(c=c, beta=beta, d=d)
+        self.c = float(c)
+        self.beta = float(beta)
+        self.d = float(d)
+        self._prior = prior
+
+    @property
+    def prior(self):
+        return self._prior
+
+    def fit(self, observations):
+        observations = self._validate_observations(observations)
+
+        posterior_c = self.c + observations.sum()
+        posterior_beta = self.beta + observations.size
+        posterior_d = self.d + 0.5 * np.dot(observations, observations)
+
+        return NormalGamma.form_constraints(
+            c=posterior_c,
+            beta=posterior_beta,
+            d=posterior_d,
+        )
+
+    @staticmethod
+    def _validate_observations(observations):
+        try:
+            observations = np.asarray(observations, dtype=float)
+        except (TypeError, ValueError) as exc:
+            raise TypeError("observations must contain numeric values") from exc
+        if observations.ndim != 1:
+            raise ValueError("observations must be one-dimensional")
+        if observations.size == 0:
+            raise ValueError("observations cannot be empty")
+        if not np.all(np.isfinite(observations)):
+            raise ValueError("observations must contain only finite values")
         return observations
