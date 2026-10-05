@@ -156,7 +156,7 @@ class GaussianPrecisionBayes:
     def mean(self, value):
         if not np.isscalar(value):
             raise TypeError("mean must be a scalar")
-        value = float(self.value)
+        value = float(value)
         if not np.isfinite(value):
             raise ValueError("mean must be finite")
         self._mean = value
