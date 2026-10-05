@@ -6,10 +6,7 @@ from .figure_2_2 import run as run_1
 from .figure_2_3 import run as run_3
 from .figure_2_6 import run as run_5
 from .figure_2_12 import run as run_6
-
-# from .figure_1_6 import run as run_
-# from .figure_1_7 import run as run_figure_1_7
-# from .figure_1_8 import run as run_figure_1_8
+from .figure_2_13_advance import run as run_7
 
 EXPERIMENTS = {
     "1": ("Running figure 2.2", run_1),
@@ -18,6 +15,7 @@ EXPERIMENTS = {
     "4": ("categorical_dirichlet_bernoulli", run_4),
     "5": ("Running figure 2.6", run_5),
     "6": ("Running figure 2.12", run_6),
+    "7": ("Running figure 2.13_advance", run_7),
 }
 
 
