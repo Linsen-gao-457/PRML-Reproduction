@@ -16,9 +16,44 @@ COLORS = {
 
 
 def create_figure(
-    sample_dataset, prior, precision, grid_points, x_min, x_max, y_min, y_max
+    sample_dataset,
+    prior,
+    precision,
+    sample_sizes,
+    grid_points,
+    x_min,
+    x_max,
+    y_min,
+    y_max,
 ):
-    pass
+    x = np.linspace(start=x_min, stop=x_max, num=grid_points)
+    figure, axis = plt.subplots()
+    axis.plot(x, prior.pdf(x), color=COLORS[0], label="$N=0$")
+    for sample_size in sample_sizes:
+        model = GaussianMeanBayes(prior=prior, precision=precision)
+        posterior = model.fit(sample_dataset[:sample_size])
+        axis.plot(
+            x,
+            posterior.pdf(x),
+            color=COLORS[sample_size],
+            label=rf"$N={sample_size}$",
+        )
+
+    axis.set(
+        xlim=(x_min, x_max),
+        ylim=(0.0, y_max),
+        xlabel=r"$\mu$",
+        ylabel=r"$p(\mu \mid \mathcal{D})$",
+    )
+    axis.tick_params(
+        direction="in",
+        top=True,
+        right=True,
+    )
+
+    axis.legend(frameon=False)
+    figure.tight_layout()
+    return figure
 
 
 def run():
@@ -27,9 +62,8 @@ def run():
     rng = create_rng(seed=config["seed"])
     sample_dataset = rng.normal(
         loc=config["data"]["mean"],
-        scale=np.sqrt(
-            config["data"]["variance"], size=config["data"]["data_sample_size"]
-        ),
+        scale=np.sqrt(config["data"]["variance"]),
+        size=config["data"]["data_sample_size"],
     )
     prior = Gaussian(
         mean=config["prior"]["mean"],
@@ -39,6 +73,7 @@ def run():
         sample_dataset=sample_dataset,
         prior=prior,
         precision=1 / config["data"]["variance"],
+        sample_sizes=config["posterior_sample_sizes"],
         grid_points=config["plot"]["grid_points"],
         x_min=config["plot"]["x_min"],
         x_max=config["plot"]["x_max"],
