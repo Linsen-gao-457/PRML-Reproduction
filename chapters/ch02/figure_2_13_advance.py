@@ -89,7 +89,7 @@ def create_figure(
 
 
 def run():
-    config_path = CONFIGS_DIR / "ch02/figure_gaussian_precision_bayes.yaml"
+    config_path = CONFIGS_DIR / "ch02/figure_2_13.yaml"
     config = load_config(config_path)
 
     rng = create_rng(seed=config["seed"])
