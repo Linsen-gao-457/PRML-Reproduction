@@ -18,4 +18,4 @@ plot:
   y_max: 0.25
   grid_points: 500
 
-output: outputs/figures/gaussian_precision_bayes.png
+output: outputs/figures/figure_2_13_advanced.png
