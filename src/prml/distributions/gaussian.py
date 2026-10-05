@@ -174,7 +174,7 @@ class GaussianPrecisionBayes:
     def fit(self, observations):
         observations = self._validate_observations(observations)
         n = observations.size
-        square_error = np.sum(observations - observations.mean) ** 2
+        square_error = np.sum(observations - self.mean) ** 2
         a = self.prior.a + n / 2
         b = self.prior.b + n / 2 * square_error
         return Gamma(a=a, b=b)
