@@ -7,7 +7,6 @@ from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
 from prml.utils.plotting import save_figure
 from prml.utils.random import create_rng
 
-
 COLORS = {
     0: "black",
     1: "green",
