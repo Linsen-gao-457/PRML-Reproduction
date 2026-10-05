@@ -2,6 +2,7 @@ from .bernoulli import Bernoulli
 from .beta import Beta
 from .catergorical import Categorical
 from .dirichlet import Dirichlet
+from .gamma import Gamma
 from .gaussian import (
     Gaussian,
     GaussianMeanBayes,
@@ -16,6 +17,7 @@ __all__ = [
     "Beta",
     "Categorical",
     "Dirichlet",
+    "Gamma",
     "Gaussian",
     "GaussianMeanBayes",
     "GaussianMeanPrecisionBayes",
