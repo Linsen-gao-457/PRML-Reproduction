@@ -5,6 +5,7 @@ from .categorical_dirichlet_bernoulli import run as run_4
 from .figure_2_2 import run as run_1
 from .figure_2_3 import run as run_3
 from .figure_2_6 import run as run_5
+from .figure_2_12 import run as run_6
 
 # from .figure_1_6 import run as run_
 # from .figure_1_7 import run as run_figure_1_7
@@ -16,7 +17,7 @@ EXPERIMENTS = {
     "3": ("Running figure 2.3", run_3),
     "4": ("categorical_dirichlet_bernoulli", run_4),
     "5": ("Running figure 2.6", run_5),
-    # "6": ("Running figure 1.8", run_figure_1_8),
+    "6": ("Running figure 2.12", run_6),
 }
 
 
