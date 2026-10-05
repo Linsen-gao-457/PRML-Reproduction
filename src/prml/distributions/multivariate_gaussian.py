@@ -83,7 +83,7 @@ class MultivariateGaussian(RandonVariable):
 
     def _pdf(self, x):
         self._check_parameters()
-        x = np.ndarray(x)
+        x = np.asarray(x, dtype=float)
         single_point_sign = x.ndim == 1
         if single_point_sign:
             if x.shape != self.mean.shape:
