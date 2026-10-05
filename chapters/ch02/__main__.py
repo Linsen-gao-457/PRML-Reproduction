@@ -6,7 +6,7 @@ from .figure_2_2 import run as run_1
 from .figure_2_3 import run as run_3
 from .figure_2_6 import run as run_5
 from .figure_2_12 import run as run_6
-from .figure_2_13_advance import run as run_7
+from .figure_2_13_plus import run as run_7
 
 EXPERIMENTS = {
     "1": ("Running figure 2.2", run_1),
