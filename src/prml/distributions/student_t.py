@@ -30,6 +30,7 @@ class Student_T(RandonVariable):
     def precision(self):
         return self.parameters["precision"]
 
+    @precision.setter
     def precision(self, value):
         if not np.isscalar(value):
             raise TypeError("precision must be a scalar")
