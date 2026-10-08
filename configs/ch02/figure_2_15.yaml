@@ -1,0 +1,24 @@
+mean: 0.0
+precision: 1.0
+
+student_t_curves:
+  - degree_of_freedom: 0.1
+    color: red
+    label: "$\\nu=0.1$"
+
+  - degree_of_freedom: 1.0
+    color: blue
+    label: "$\\nu=1.0$"
+
+gaussian_limit:
+  color: green
+  label: "$\\nu\\rightarrow\\infty$"
+
+plot:
+  x_min: -5.0
+  x_max: 5.0
+  y_min: 0.0
+  y_max: 0.5
+  grid_points: 500
+
+output: outputs/figures/figure_2_15.png
