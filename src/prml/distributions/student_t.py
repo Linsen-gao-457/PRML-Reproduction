@@ -67,12 +67,14 @@ class Student_T(RandonVariable):
     def _pdf(self, x):
         nu = self.degree_of_freedom
         squared_error = (x - self.mean) ** 2
-        log_normalization = gammaln((nu + 1) / 2 - gammaln(nu / 2.0)) + 0.5 * (
-            np.log(self.precision) - np.log(np.pi * nu)
+        log_normalization = (
+            gammaln((nu + 1) / 2)
+            - gammaln(nu / 2.0)
+            + 0.5 * (np.log(self.precision) - np.log(np.pi * nu))
         )
         log_kernel = -(nu + 1) / 2 * np.log1p(self.precision * squared_error / nu)
         density = np.exp(log_kernel + log_normalization)
-        return density.item() if density.ndim == 1 else density
+        return density.item() if density.ndim == 0 else density
 
     def _draw(self, sample_size, rng):
         scale = 1.0 / np.sqrt(self.precision)
