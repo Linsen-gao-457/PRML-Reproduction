@@ -1,0 +1,22 @@
+seed: 123
+
+data:
+  mean: 0.0
+  standard_deviation: 1.0
+  sample_size: 30
+  outliers: [8.5, 9.0, 9.5]
+
+student_t:
+  learning_rate: 0.01
+  max_iterations: 10000
+  tolerance: 0.0001
+
+plot:
+  x_min: -5.0
+  x_max: 10.0
+  y_min: 0.0
+  y_max: 0.6
+  grid_points: 1000
+  bins: 30
+
+output: outputs/figures/figure_2_16.png
