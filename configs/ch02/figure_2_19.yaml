@@ -1,0 +1,24 @@
+curves:
+  - mean_direction: 0.7853981633974483
+    concentration: 5.0
+    color: red
+    label: "$m=5,\\ \\theta_0=\\pi/4$"
+
+  - mean_direction: 2.356194490192345
+    concentration: 1.0
+    color: blue
+    label: "$m=1,\\ \\theta_0=3\\pi/4$"
+
+plot:
+  grid_points: 500
+  density_y_max: 0.95
+  circular_x_min: -0.55
+  circular_x_max: 0.85
+  circular_y_min: -0.45
+  circular_y_max: 0.85
+  ray_length: 0.78
+  three_quarter_ray_length: 0.60
+  figure_width: 11
+  figure_height: 5
+
+output: outputs/figures/figure_2_19.png
