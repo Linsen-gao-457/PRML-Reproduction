@@ -10,6 +10,7 @@ from .figure_2_13_plus import run as run_7
 from .figure_2_14_plus import run as run_8
 from .figure_2_15 import run as run_9
 from .figure_2_16 import run as run_10
+from .figure_2_19 import run as run_11
 
 EXPERIMENTS = {
     "1": ("Running figure 2.2", run_1),
@@ -22,6 +23,7 @@ EXPERIMENTS = {
     "8": ("Running figure 2.14_plus", run_8),
     "9": ("Running figure 2.15", run_9),
     "10": ("Running figure 2.16", run_10),
+    "11": ("Running figure 2.19", run_11),
 }
 
 
