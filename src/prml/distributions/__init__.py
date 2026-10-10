@@ -11,6 +11,7 @@ from .gaussian import (
 )
 from .normal_gamma import NormalGamma
 from .uniform import Uniform
+from .vonmises import VonMises
 
 __all__ = [
     "Bernoulli",
@@ -24,4 +25,5 @@ __all__ = [
     "GaussianPrecisionBayes",
     "NormalGamma",
     "Uniform",
+    "VonMises",
 ]
