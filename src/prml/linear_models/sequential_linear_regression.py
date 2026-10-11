@@ -43,5 +43,15 @@ class SequentialLinearRegression:
                 self.partial_fit(phi_x, t)
         return self
 
-    def predict(self):
-        pass
+    def predict(self, design_matrix):
+        if self.coef_ is None:
+            raise RuntimeError("fit must be called before predict")
+
+        design_matrix = np.asarray(
+            design_matrix,
+            dtype=float,
+        )
+        return np.dot(
+            design_matrix,
+            self.coef_,
+        )
