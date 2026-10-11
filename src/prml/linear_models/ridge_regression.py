@@ -21,4 +21,4 @@ class RidgeRegression:
     def predict(self, design_matrix):
         if self._coef is None:
             raise RuntimeError("fit must be called before predict")
-        return np.asarray(design_matrix) @ self._coef
+        return np.dot(design_matrix, self._coef)
