@@ -5,10 +5,22 @@ Learning_.
 
 ## Setup
 
+For normal development, install versions allowed by pyproject.toml:
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -e '.[test]'
+```
+
+For an environment matching the tested dependency versions, use the lock file:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e '.[test]' -c requirements.lock.txt
 ```
 
 ## Reproduce a figure
