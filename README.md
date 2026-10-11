@@ -19,6 +19,7 @@ file under `configs/` and generated images are written to `outputs/figures/`.
 ```bash
 python -m chapters.ch01 all
 python -m chapters.ch02 all
+python -m chapters.ch03 all
 
 ```
 
