@@ -71,7 +71,14 @@ def nearest_neighbour_density(
     observations,
     k,
 ):
-    pass
+    # Shape:
+    # x[:, None]            -> (grid_points, 1)
+    # observations[None, :] -> (1, sample_size)
+    # distances             -> (grid_points, sample_size)
+    distances = np.abs(x[:, None] - observations[None, :])
+    kth_distance = np.partition(a=distances, kth=k - 1, axis=1)[:, k - 1]
+    volume = 2 * kth_distance
+    return k / (observations.size * volume)
 
 
 def create_figure(
@@ -105,7 +112,7 @@ def create_figure(
     )
 
     for axis, k in zip(
-        axes.flat(),
+        axes.flat,
         k_values,
     ):
         estimated_density = nearest_neighbour_density(
