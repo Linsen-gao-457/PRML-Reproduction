@@ -8,7 +8,7 @@ def polynomial_basis(x: np.ndarray, degree: int):
 
 
 def gaussian_basis(x, centers, width):
-    x = np.ndarray(x, dtype=float)
+    x = np.asarray(x, dtype=float)
     if x.ndim != 1:
         raise ValueError("x must be one-dimensional")
     if centers.ndim != 1:
@@ -20,7 +20,7 @@ def gaussian_basis(x, centers, width):
 
 
 def sigmoidal_basis(x, centers, width):
-    x = np.ndarray(x, dtype=float)
+    x = np.asarray(x, dtype=float)
     if x.ndim != 1:
         raise ValueError("x must be one-dimensional")
     if centers.ndim != 1:
