@@ -21,4 +21,4 @@ plot:
   figure_width: 11
   figure_height: 5
 
-output: outputs/figures/figure_2_19.png
+output: outputs/figures/ch02/figure_2_19.png

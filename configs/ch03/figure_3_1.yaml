@@ -14,4 +14,4 @@ sigmoid:
   number_of_centers: 11
   width: 0.1
 
-output: outputs/figures/figure_3_1.png
+output: outputs/figures/ch03/figure_3_1.png

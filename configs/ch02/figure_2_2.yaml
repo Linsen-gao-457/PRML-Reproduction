@@ -6,4 +6,4 @@ parameters:
 
 grid_points: 1000
 y_max: 3.0
-output: outputs/figures/figure_2_2.png
+output: outputs/figures/ch02/figure_2_2.png

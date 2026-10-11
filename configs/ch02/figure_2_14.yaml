@@ -21,4 +21,4 @@ plot:
   precision_grid_points: 250
   contour_levels: [0.1, 0.3, 0.5, 0.7, 0.9]
 
-output: outputs/figures/figure_2_14_plus.png
+output: outputs/figures/ch02/figure_2_14_plus.png

@@ -19,4 +19,4 @@ plot:
   grid_points: 1000
   bins: 30
 
-output: outputs/figures/figure_2_16.png
+output: outputs/figures/ch02/figure_2_16.png

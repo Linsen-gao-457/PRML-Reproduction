@@ -1,6 +1,6 @@
 seed: 123
 sample_size: 50
-output: outputs/figures/figure_2_24.png
+output: outputs/figures/ch02/figure_2_24.png
 
 mixture:
   - weight: 0.3

@@ -4,4 +4,4 @@ noise_std: 0.25
 degree: 9
 log_regularization_values: [-18, 0]
 grid_points: 500
-output: outputs/figures/figure_1_7.png
+output: outputs/figures/ch01/figure_1_7.png

@@ -17,4 +17,4 @@ plot:
   y_max: 5.0
   grid_points: 500
 
-output: outputs/figures/figure_2_12.png
+output: outputs/figures/ch02/figure_2_12.png

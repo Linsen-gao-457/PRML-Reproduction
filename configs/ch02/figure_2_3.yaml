@@ -4,4 +4,4 @@ prior:
 observation: [1]
 grid_points: 500
 y_max: 2.0
-output: outputs/figures/figure_2_3.png
+output: outputs/figures/ch02/figure_2_3.png
