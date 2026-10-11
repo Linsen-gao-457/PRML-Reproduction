@@ -14,7 +14,8 @@ python -m pip install -e '.[test]'
 ## Reproduce a figure
 
 Run figure scripts from the repository root. Configuration lives in the matching
-file under `configs/` and generated images are written to `outputs/figures/`.
+file under `configs/`, and generated images are grouped by chapter under
+`outputs/figures/chXX/`.
 
 ```bash
 python -m chapters.ch01 all

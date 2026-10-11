@@ -19,18 +19,18 @@ python -m chapters.ch01 all
 ```
 
 Each experiment reads its parameters from `configs/ch01/` and writes its plot
-to `outputs/figures/`.
+to `outputs/figures/ch01/`.
 
 ## Implemented figures
 
 | Experiment | Figure | Concept                                                       | Configuration                  | Output                           |
 | ---------: | :----: | ------------------------------------------------------------- | ------------------------------ | -------------------------------- |
-|        `1` |  1.2   | Samples from $\sin(2\pi x)$ with additive Gaussian noise      | `configs/ch01/figure_1_2.yaml` | `outputs/figures/figure_1_2.png` |
-|        `2` |  1.4   | Polynomial least-squares fits for $M=0,1,3,9$                 | `configs/ch01/figure_1_4.yaml` | `outputs/figures/figure_1_4.png` |
-|        `3` |  1.5   | Training and test RMS error versus polynomial degree          | `configs/ch01/figure_1_5.yaml` | `outputs/figures/figure_1_5.png` |
-|        `4` |  1.6   | Effect of increasing the training-set size for an $M=9$ model | `configs/ch01/figure_1_6.yaml` | `outputs/figures/figure_1_6.png` |
-|        `5` |  1.7   | Degree-9 ridge fits for two regularization strengths          | `configs/ch01/figure_1_7.yaml` | `outputs/figures/figure_1_7.png` |
-|        `6` |  1.8   | Training and test RMS error versus $\ln\lambda$               | `configs/ch01/figure_1_8.yaml` | `outputs/figures/figure_1_8.png` |
+|        `1` |  1.2   | Samples from $\sin(2\pi x)$ with additive Gaussian noise      | `configs/ch01/figure_1_2.yaml` | `outputs/figures/ch01/figure_1_2.png` |
+|        `2` |  1.4   | Polynomial least-squares fits for $M=0,1,3,9$                 | `configs/ch01/figure_1_4.yaml` | `outputs/figures/ch01/figure_1_4.png` |
+|        `3` |  1.5   | Training and test RMS error versus polynomial degree          | `configs/ch01/figure_1_5.yaml` | `outputs/figures/ch01/figure_1_5.png` |
+|        `4` |  1.6   | Effect of increasing the training-set size for an $M=9$ model | `configs/ch01/figure_1_6.yaml` | `outputs/figures/ch01/figure_1_6.png` |
+|        `5` |  1.7   | Degree-9 ridge fits for two regularization strengths          | `configs/ch01/figure_1_7.yaml` | `outputs/figures/ch01/figure_1_7.png` |
+|        `6` |  1.8   | Training and test RMS error versus $\ln\lambda$               | `configs/ch01/figure_1_8.yaml` | `outputs/figures/ch01/figure_1_8.png` |
 
 For example:
 
