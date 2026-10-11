@@ -23,15 +23,20 @@ class Beta(RandonVariable):
         sum = self.a + self.b
         return (self.a * self.b) / (sum**2 * (sum + 1))
 
-    # Heavey engineer implement
     def _pdf(self, mu):
-        return (
-            gamma(self.a + self.b)
-            * np.power(mu, self.a - 1)
-            * np.power(1 - mu, self.b - 1)
-            / gamma(self.a)
-            / gamma(self.b)
-        )
+        with np.errstate(
+            divide="ignore",
+            invalid="ignore",
+        ):
+            density = (
+                gamma(self.a + self.b)
+                * np.power(mu, self.a - 1)
+                * np.power(1 - mu, self.b - 1)
+                / gamma(self.a)
+                / gamma(self.b)
+            )
+
+        return density
 
     def _draw(self, sample_size, rng):
         return rng.beta(self.a, self.b, size=sample_size)
