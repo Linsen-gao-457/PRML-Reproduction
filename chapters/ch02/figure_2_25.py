@@ -71,7 +71,16 @@ def kernel_density(
     observations,
     bandwidth,
 ):
-    pass
+    # Shape:
+    # x[:, None]              -> (grid_points, 1)
+    # observations[None, :]   -> (1, sample_size)
+    # difference              -> (grid_points, sample_size)
+    if bandwidth <= 0:
+        raise ValueError("bandwidth must be positive")
+    difference = x[:, None] - observations[None, :]
+    normalization = np.sqrt(2.0 * np.pi) * bandwidth
+    kernels = np.exp(-0.5 * (difference / bandwidth) ** 2)
+    return np.mean(kernels / normalization, axis=1)
 
 
 def create_figure(observations, config):
@@ -94,10 +103,7 @@ def create_figure(observations, config):
         sharex=True,
         sharey=True,
     )
-    for axis, bandwidth in zip(
-        axes,
-        bandwidths.flat(),
-    ):
+    for axis, bandwidth in zip(axes, bandwidths):
         estimated_density = kernel_density(
             x=x, observations=observations, bandwidth=bandwidth
         )
