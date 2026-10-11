@@ -19,27 +19,27 @@ class SequentialLinearRegression:
         error = t - prediction
         self.coef_ += self.learning_rate * error * phi_x
 
-    def fit(self, designed_matrix, targets):
-        designed_matrix = np.asanyarray(designed_matrix, dtype=float)
+    def fit(self, design_matrix, targets):
+        design_matrix = np.asanyarray(design_matrix, dtype=float)
         targets = np.asanyarray(targets, dtype=float)
-        if designed_matrix.ndim != 2:
+        if design_matrix.ndim != 2:
             raise ValueError("design_matrix must be two-dimensional")
 
         if targets.ndim != 1:
             raise ValueError("targets must be one-dimensional")
 
-        if designed_matrix.shape[0] != targets.size:
+        if design_matrix.shape[0] != targets.size:
             raise ValueError(
                 "design_matrix and targets must have the same number of observations"
             )
-        if not np.all(np.isfinite(designed_matrix)):
+        if not np.all(np.isfinite(design_matrix)):
             raise ValueError("design_matrix must contain finite values")
 
         if not np.all(np.isfinite(targets)):
             raise ValueError("targets must contain finite values")
-        self.coef_ = np.zeros(designed_matrix.shape[1], dtype=float)
+        self.coef_ = np.zeros(design_matrix.shape[1], dtype=float)
         for _ in range(self.epochs):
-            for phi_x, t in zip(designed_matrix, targets):
+            for phi_x, t in zip(design_matrix, targets):
                 self.partial_fit(phi_x, t)
         return self
 
