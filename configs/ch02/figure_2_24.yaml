@@ -3,13 +3,13 @@ sample_size: 50
 output: outputs/figures/figure_2_24.png
 
 mixture:
-  - weight: 0.41
+  - weight: 0.3
     mean: 0.3
     standard_deviation: 0.1
 
-  - weight: 0.9
+  - weight: 0.7
     mean: 0.8
-    standard_deviation: 0.3
+    standard_deviation: 0.1
 
 histogram:
   bin_widths: [0.04, 0.08, 0.25]
