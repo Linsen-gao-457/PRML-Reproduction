@@ -83,6 +83,80 @@ def create_figure(observations, config):
         num=plot["grid_points"],
     )
     true_density = mixture_pdf(x=x, mixture=config["mixture"])
+    bandwidths = config["kernel"]["bandwidths"]
+    figure, axes = plt.subplots(
+        len(bandwidths),
+        1,
+        figsize=(
+            plot["figure_width"],
+            plot["figure_height"],
+        ),
+        sharex=True,
+        sharey=True,
+    )
+    for axis, bandwidth in zip(
+        axes,
+        bandwidths.flat(),
+    ):
+        estimated_density = kernel_density(
+            x=x, observations=observations, bandwidth=bandwidth
+        )
+        axis.plot(
+            x,
+            estimated_density,
+            color=config["kernel"]["color"],
+            linewidth=config["kernel"]["line_width"],
+        )
+        axis.plot(
+            x,
+            true_density,
+            color=config["true_density"]["color"],
+            linewidth=config["true_density"]["line_width"],
+        )
+
+        axis.text(
+            0.05,
+            0.78,
+            rf"$h={bandwidth:g}$",
+            transform=axis.transAxes,
+            fontsize=12,
+        )
+        axis.set(
+            xlim=(
+                plot["x_min"],
+                plot["x_max"],
+            ),
+            ylim=(
+                plot["y_min"],
+                plot["y_max"],
+            ),
+        )
+
+        axis.set_yticks(
+            [
+                plot["y_min"],
+                plot["y_max"],
+            ]
+        )
+
+        axis.tick_params(
+            direction="in",
+            top=True,
+            right=True,
+        )
+
+    axes[-1].set_xticks(
+        [
+            plot["x_min"],
+            0.5,
+            plot["x_max"],
+        ]
+    )
+
+    axes[-1].set_xlabel(r"$x$")
+
+    figure.tight_layout()
+    return figure
 
 
 def run():
