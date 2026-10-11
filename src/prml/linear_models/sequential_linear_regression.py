@@ -12,8 +12,12 @@ class SequentialLinearRegression:
         self.epochs = int(epochs)
         self.coef_ = None
 
-    def partial_fit(self, x, t):
-        pass
+    def partial_fit(self, phi_x, t):
+        phi_x = np.asarray(phi_x, dtype=float)
+        t = np.asarray(t, dtype=float)
+        prediction = np.dot(phi_x, self.coef_)
+        error = t - prediction
+        self.coef_ += self.learning_rate * error * phi_x
 
     def fit(self, designed_matrix, targets):
         designed_matrix = np.asanyarray(designed_matrix, dtype=float)
@@ -35,8 +39,8 @@ class SequentialLinearRegression:
             raise ValueError("targets must contain finite values")
         self.coef_ = np.zeros(designed_matrix.shape[1], dtype=float)
         for _ in range(self.epochs):
-            for x, t in zip(designed_matrix, targets):
-                self.partial_fit(x, t)
+            for phi_x, t in zip(designed_matrix, targets):
+                self.partial_fit(phi_x, t)
         return self
 
     def predict(self):
