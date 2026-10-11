@@ -1,10 +1,11 @@
 import argparse
 
 from .figure_3_1 import run as run_1
-
+from .figure_3_2_plus import run as run_2
 
 EXPERIMENTS = {
     "1": ("Running figure 3.1", run_1),
+    "2": ("Running figure 3.2 plus", run_2),
 }
 
 
