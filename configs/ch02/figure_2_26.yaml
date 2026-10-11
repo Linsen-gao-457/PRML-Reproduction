@@ -1,5 +1,5 @@
 seed: 123
-sample_size: 100
+sample_size: 50
 
 mixture:
   - weight: 0.3
@@ -11,7 +11,7 @@ mixture:
     standard_deviation: 0.1
 
 nearest_neighbour:
-  k_values: [1, 5, 30, 50, 100]
+  k_values: [1, 5, 30, 50]
   color: blue
   line_width: 2
 
