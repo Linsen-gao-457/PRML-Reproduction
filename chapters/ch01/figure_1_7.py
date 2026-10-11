@@ -68,7 +68,6 @@ def run(config_path=None):
     )
     plt.close(figure)
 
-    print(f"Saved: {output}")
     return output
 
 
