@@ -4,7 +4,7 @@ plot:
   grid_points: 500
 
 data:
-  sample_size: 100000000
+  sample_size: 500
   std: 0.25
 
 seed: 123
