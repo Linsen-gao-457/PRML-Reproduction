@@ -28,4 +28,4 @@ def sigmoidal_basis(x, centers, width):
     if width <= 0:
         raise ValueError("width must be positive")
     values = (x[:, None] - centers[None, :]) / width
-    return 1.0 / (1 + np.exp(values))
+    return 1.0 / (1 + np.exp(-values))
