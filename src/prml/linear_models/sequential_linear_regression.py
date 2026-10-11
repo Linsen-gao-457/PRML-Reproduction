@@ -12,11 +12,32 @@ class SequentialLinearRegression:
         self.epochs = int(epochs)
         self.coef_ = None
 
-    def partial_fit(self, designed_matrix, targets):
+    def partial_fit(self, x, t):
         pass
 
-    def fit(self):
-        pass
+    def fit(self, designed_matrix, targets):
+        designed_matrix = np.asanyarray(designed_matrix, dtype=float)
+        targets = np.asanyarray(targets, dtype=float)
+        if designed_matrix.ndim != 2:
+            raise ValueError("design_matrix must be two-dimensional")
+
+        if targets.ndim != 1:
+            raise ValueError("targets must be one-dimensional")
+
+        if designed_matrix.shape[0] != targets.size:
+            raise ValueError(
+                "design_matrix and targets must have the same number of observations"
+            )
+        if not np.all(np.isfinite(designed_matrix)):
+            raise ValueError("design_matrix must contain finite values")
+
+        if not np.all(np.isfinite(targets)):
+            raise ValueError("targets must contain finite values")
+        self.coef_ = np.zeros(designed_matrix.shape[1], dtype=float)
+        for _ in range(self.epochs):
+            for x, t in zip(designed_matrix, targets):
+                self.partial_fit(x, t)
+        return self
 
     def predict(self):
         pass
