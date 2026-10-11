@@ -5,7 +5,7 @@ from prml.distributions import Bernoulli, Categorical, Dirichlet
 from prml.utils.path import PROJECT_ROOT
 from prml.utils.plotting import save_figure
 
-OUTPUT_PATH = PROJECT_ROOT / "outputs/figures/categorical_dirichlet_bernoulli.png"
+OUTPUT_PATH = PROJECT_ROOT / "outputs/figures/ch02/categorical_dirichlet_bernoulli.png"
 
 
 def categorical_dirichlet_example():
