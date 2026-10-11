@@ -207,8 +207,7 @@ def run():
 
 
 def main():
-    output = run()
-    print(f"Saved figure to {output}")
+    run()
 
 
 if __name__ == "__main__":
