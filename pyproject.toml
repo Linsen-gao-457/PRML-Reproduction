@@ -9,15 +9,15 @@ description = "Reproductions of figures and algorithms from Pattern Recognition 
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "matplotlib",
-    "numpy",
-    "PyYAML",
-    "scipy",
+    "matplotlib>=3.9.4,<4",
+    "numpy>=2.0.2,<3",
+    "PyYAML>=6.0.3,<7",
+    "scipy>=1.13.1,<2",
 ]
 
 [project.optional-dependencies]
 test = [
-    "pytest>=7",
+    "pytest>=8.4.2,<9",
 ]
 
 [tool.setuptools.packages.find]
