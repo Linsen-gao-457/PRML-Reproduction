@@ -1,0 +1,17 @@
+plot:
+  x_min: -1.0
+  x_max: 1.0
+  grid_points: 500
+
+polynomial:
+  degree: 11
+
+gaussian:
+  number_of_centers: 11
+  width: 0.1
+
+sigmoid:
+  number_of_centers: 11
+  width: 0.1
+
+output: outputs/figures/figure_3_1.png
