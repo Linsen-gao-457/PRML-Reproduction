@@ -12,4 +12,4 @@ class LinearRegression:
     def predict(self, design_matrix):
         if self.coef_ is None:
             raise RuntimeError("fit must be called before predict")
-        return design_matrix @ self.coef_
+        return np.dot(design_matrix, self.coef_)
