@@ -87,7 +87,6 @@ def run():
     figure = create_figure(train_errors, test_errors, degrees)
     output = save_figure(figure, PROJECT_ROOT / configure["output"])
     plt.close(figure)
-    print(f"Saved: {output}")
     return output
 
 
