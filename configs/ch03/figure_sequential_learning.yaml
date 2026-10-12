@@ -14,7 +14,7 @@ polynomial:
 
 gaussian:
   number_of_centers: 5
-  width: 1
+  width: 0.1
 
 sigmoid:
   number_of_centers: 10
