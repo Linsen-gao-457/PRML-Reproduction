@@ -21,7 +21,7 @@ def create_figure(log_regularization_values, grid_points: int, degree, x, target
         regularization = np.exp(log_regularization_value)
 
         model = RidgeRegression(regularization)
-        model.fit(design_matrix=train_design_matrix, targets=targets)
+        model.fit(train_design_matrix, targets)
         predictions = model.predict(design_matrix=grid_design_matrix)
         axis.plot(grid, predictions, color="red")
         axis.plot(grid, target_function(grid), color="green")

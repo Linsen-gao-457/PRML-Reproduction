@@ -32,10 +32,7 @@ def calculate_errors(
 
     for log_regularization in log_regularization_values:
         model = RidgeRegression(regularization=np.exp(log_regularization))
-        model.fit(
-            design_matrix=train_design,
-            targets=t_train,
-        )
+        model.fit(train_design, t_train)
 
         train_errors.append(rms(model.predict(train_design), t_train))
         test_errors.append(rms(model.predict(test_design), t_test))

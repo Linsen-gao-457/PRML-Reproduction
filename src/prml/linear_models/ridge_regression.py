@@ -9,12 +9,13 @@ class RidgeRegression:
         self._coef = None
 
     # X (N,M), N is the batch size, M is the degree of polynomials
-    def fit(self, targets, design_matrix):
+    def fit(self, design_matrix, targets):
         design_matrix = np.asarray(design_matrix)
         targets = np.asarray(targets)
         identity = np.eye(design_matrix.shape[1])
-        lhs = design_matrix.T @ design_matrix + self.regularization * identity
-        rhs = design_matrix.T @ targets
+        lhs = np.dot(design_matrix.T, design_matrix)
+        lhs += self.regularization * identity
+        rhs = np.dot(design_matrix.T, targets)
         self._coef = np.linalg.solve(lhs, rhs)
         return self
 
