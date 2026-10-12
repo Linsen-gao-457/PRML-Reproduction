@@ -45,7 +45,6 @@ def run(config_path=None):
     figure = create_figure(x, targets)
     output = save_figure(figure, PROJECT_ROOT / config["output"])
     plt.close(figure)
-    print(f"Saved: {output}")
     return output
 
 
