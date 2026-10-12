@@ -1,3 +1,5 @@
+"""Normal-gamma distribution for Gaussian mean and precision."""
+
 import numpy as np
 from scipy.special import gamma
 
@@ -5,7 +7,22 @@ from .rv import RandonVariable
 
 
 class NormalGamma(RandonVariable):
+    """Represent a constrained normal-gamma distribution.
+
+    Parameters
+    ----------
+    beta : float
+        Positive conditional precision scale.
+    mu_0 : float
+        Location of the conditional Gaussian distribution.
+    a : float
+        Positive gamma shape satisfying ``a = 1 + beta / 2``.
+    b : float
+        Positive gamma rate.
+    """
+
     def __init__(self, beta, mu_0, a, b):
+        """Initialize location, scale, shape, and rate parameters."""
         super().__init__()
         self.mu_0 = mu_0
         self.beta = beta
@@ -14,6 +31,22 @@ class NormalGamma(RandonVariable):
 
     @classmethod
     def form_constraints(cls, c, beta, d):
+        """Construct a distribution from constrained parameters.
+
+        Parameters
+        ----------
+        c : float
+            Natural parameter satisfying ``mu_0 = c / beta``.
+        beta : float
+            Positive conditional precision scale.
+        d : float
+            Natural parameter satisfying ``b = d - c**2 / (2 * beta)``.
+
+        Returns
+        -------
+        NormalGamma
+            Distribution expressed by the equivalent standard parameters.
+        """
         if not np.isscalar(c) or not np.isscalar(beta) or not np.isscalar(d):
             raise TypeError("c, beta, and d must be scalars")
         c, beta, d = float(c), float(beta), float(d)
@@ -30,10 +63,12 @@ class NormalGamma(RandonVariable):
 
     @property
     def mu_0(self):
+        """Return the conditional Gaussian location."""
         return self.parameters["mu_0"]
 
     @mu_0.setter
     def mu_0(self, value):
+        """Set the finite conditional Gaussian location."""
         if not np.isscalar(value):
             raise TypeError("mu_0 must be a scalar")
 
@@ -46,10 +81,12 @@ class NormalGamma(RandonVariable):
 
     @property
     def beta(self):
+        """Return the conditional precision scale."""
         return self.parameters["beta"]
 
     @beta.setter
     def beta(self, value):
+        """Set the positive conditional precision scale."""
         if not np.isscalar(value):
             raise TypeError("beta must be a scalar")
 
@@ -65,10 +102,12 @@ class NormalGamma(RandonVariable):
 
     @property
     def a(self):
+        """Return the gamma shape parameter."""
         return self.parameters["a"]
 
     @a.setter
     def a(self, value):
+        """Set the shape subject to the normal-gamma constraint."""
         if not np.isscalar(value):
             raise TypeError("a must be a scalar")
 
@@ -88,10 +127,12 @@ class NormalGamma(RandonVariable):
 
     @property
     def b(self):
+        """Return the gamma rate parameter."""
         return self.parameters["b"]
 
     @b.setter
     def b(self, value):
+        """Set the positive gamma rate parameter."""
         if not np.isscalar(value):
             raise TypeError("b must be a scalar")
 
@@ -107,13 +148,27 @@ class NormalGamma(RandonVariable):
 
     @property
     def c(self):
+        """Return the constrained natural parameter ``c``."""
         return self.beta * self.mu_0
 
     @property
     def d(self):
+        """Return the constrained natural parameter ``d``."""
         return self.b + self.c**2 / (2.0 * self.beta)
 
     def _pdf(self, x):
+        """Evaluate joint density for mean-precision pairs.
+
+        Parameters
+        ----------
+        x : array_like of shape (2,) or (n_samples, 2)
+            Pairs whose first column is mean and second column is precision.
+
+        Returns
+        -------
+        float or numpy.ndarray of shape (n_samples,)
+            Joint density for each pair.
+        """
         x = np.asarray(x, dtype=float)
         single_point_sign = x.ndim == 1
         if single_point_sign:
@@ -141,6 +196,20 @@ class NormalGamma(RandonVariable):
         return density[0] if single_point_sign else density
 
     def _draw(self, sample_size, rng=None):
+        """Draw joint mean-precision samples.
+
+        Parameters
+        ----------
+        sample_size : int
+            Number of samples.
+        rng : numpy.random.Generator or None, default=None
+            Generator to use.
+
+        Returns
+        -------
+        numpy.ndarray of shape (sample_size, 2)
+            Mean-precision pairs.
+        """
         if rng is None:
             rng = np.random.default_rng()
         precision = rng.gamma(shape=self.a, scale=1 / self.b, size=sample_size)

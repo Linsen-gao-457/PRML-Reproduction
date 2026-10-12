@@ -1,3 +1,5 @@
+"""Categorical distribution for one-hot encoded observations."""
+
 import numpy as np
 
 from .dirichlet import Dirichlet
@@ -5,17 +7,36 @@ from .rv import RandonVariable
 
 
 class Categorical(RandonVariable):
+    """Model categorical observations.
+
+    Parameters
+    ----------
+    mu : array_like, Dirichlet, or None, default=None
+        Probability vector, conjugate Dirichlet prior, or ``None`` when the
+        probabilities will be estimated later.
+
+    Attributes
+    ----------
+    probabilities : numpy.ndarray of shape (n_classes,)
+        Point probabilities or mean of the Dirichlet prior/posterior.
+    size : int or None
+        Number of categories when known.
+    """
+
     def __init__(self, mu=None):
+        """Initialize probabilities or a conjugate prior."""
         super().__init__()
         self.k_class = None
         self.mu = mu
 
     @property
     def mu(self):
+        """Return the probability vector or Dirichlet prior."""
         return self.parameters["mu"]
 
     @mu.setter
     def mu(self, mu):
+        """Set probabilities or a Dirichlet prior."""
         if mu is None:
             self.parameters["mu"] = None
             return
@@ -36,6 +57,7 @@ class Categorical(RandonVariable):
 
     @property
     def probabilities(self):
+        """Return point probabilities or the prior/posterior mean."""
         if self.mu is None:
             raise RuntimeError("mu is unknown")
         if isinstance(self.mu, Dirichlet):
@@ -44,14 +66,28 @@ class Categorical(RandonVariable):
 
     @property
     def size(self):
+        """Return the number of categories when known."""
         if hasattr(self.mu, "size"):
             return self.k_class
 
     @property
     def mean(self):
+        """Return the mean one-hot vector."""
         return self.probabilities
 
     def pmf(self, x):
+        """Evaluate masses for one-hot observations.
+
+        Parameters
+        ----------
+        x : array_like of shape (n_classes,) or (n_samples, n_classes)
+            One-hot encoded observations.
+
+        Returns
+        -------
+        float or numpy.ndarray of shape (n_samples,)
+            Probability mass for each observation.
+        """
         observations, single_observation_sign = self._validate_observations(
             observations=x
         )
@@ -61,6 +97,18 @@ class Categorical(RandonVariable):
         return pmf
 
     def fit(self, observations):
+        """Fit probabilities or update a Dirichlet prior.
+
+        Parameters
+        ----------
+        observations : array_like of shape (n_samples, n_classes)
+            One-hot encoded observations.
+
+        Returns
+        -------
+        Categorical
+            Fitted distribution.
+        """
         observations, _ = self._validate_observations(observations)
         num_class = observations.sum(axis=0)
         if isinstance(self.mu, np.ndarray):
@@ -70,9 +118,11 @@ class Categorical(RandonVariable):
         return self
 
     def _pdf(self, x):
+        """Evaluate mass through the common density interface."""
         return self.pmf(x)
 
     def _draw(self, sample_size, rng):
+        """Draw one-hot encoded categorical samples."""
         class_indices = rng.choice(
             self.k_class,
             size=sample_size,
@@ -88,6 +138,20 @@ class Categorical(RandonVariable):
         self,
         observations,
     ):
+        """Validate one-hot encoded observations.
+
+        Parameters
+        ----------
+        observations : array_like
+            Candidate observation or observation matrix.
+
+        Returns
+        -------
+        observations : numpy.ndarray of shape (n_samples, n_classes)
+            Validated integer observations.
+        single_observation : bool
+            Whether the original input represented one observation.
+        """
         observations = np.asarray(observations)
         single_obervation_sign = observations.ndim == 1
         if single_obervation_sign:

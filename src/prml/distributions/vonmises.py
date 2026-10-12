@@ -1,3 +1,5 @@
+"""Von Mises distribution for periodic angular observations."""
+
 import numpy as np
 from scipy.optimize import brentq
 from scipy.special import i0e, i1e
@@ -6,17 +8,37 @@ from .rv import RandonVariable
 
 
 class VonMises(RandonVariable):
+    """Represent, sample, and fit a circular distribution.
+
+    Parameters
+    ----------
+    mean_direction : float
+        Finite mean direction.
+    concentration : float
+        Nonnegative concentration parameter.
+
+    Attributes
+    ----------
+    mean_resultant_length : float
+        Population mean resultant length.
+    circular_variance : float
+        One minus the mean resultant length.
+    """
+
     def __init__(self, mean_direction, concentration):
+        """Initialize mean direction and concentration."""
         super().__init__()
         self.mean_direction = mean_direction
         self.concentration = concentration
 
     @property
     def mean_direction(self):
+        """Return the mean direction."""
         return self.parameters["mean_direction"]
 
     @mean_direction.setter
     def mean_direction(self, value):
+        """Set the finite mean direction."""
         if not np.isscalar(value):
             raise TypeError("mean_direction must be a scalar")
         value = float(value)
@@ -27,10 +49,12 @@ class VonMises(RandonVariable):
 
     @property
     def concentration(self):
+        """Return the concentration parameter."""
         return self.parameters["concentration"]
 
     @concentration.setter
     def concentration(self, value):
+        """Set the nonnegative concentration parameter."""
         if not np.isscalar(value):
             raise TypeError("concentration must be a scalar")
 
@@ -46,6 +70,7 @@ class VonMises(RandonVariable):
 
     @property
     def mean_resultant_length(self):
+        """Return the population mean resultant length."""
         if self.concentration == 0:
             return 0.0
 
@@ -53,9 +78,22 @@ class VonMises(RandonVariable):
 
     @property
     def circular_variance(self):
+        """Return the circular variance."""
         return 1.0 - self.mean_resultant_length
 
     def _pdf(self, x):
+        """Evaluate the von Mises density.
+
+        Parameters
+        ----------
+        x : numpy.ndarray
+            Angular evaluation points.
+
+        Returns
+        -------
+        float or numpy.ndarray
+            Density at each angle.
+        """
         difference = x - self.mean_direction
 
         # i0e(k) = exp(-abs(k)) * i0(k).
@@ -72,6 +110,7 @@ class VonMises(RandonVariable):
         return density.item() if density.ndim == 0 else density
 
     def _draw(self, sample_size, rng):
+        """Draw angular samples."""
         return rng.vonmises(
             mu=self.mean_direction,
             kappa=self.concentration,
@@ -79,6 +118,23 @@ class VonMises(RandonVariable):
         )
 
     def fit(self, observations):
+        """Estimate parameters by maximum likelihood.
+
+        Parameters
+        ----------
+        observations : array_like of shape (n_samples,)
+            Nonempty finite angular observations.
+
+        Returns
+        -------
+        VonMises
+            Fitted distribution.
+
+        Raises
+        ------
+        ValueError
+            If identical angles imply no finite concentration estimate.
+        """
         observations = self._validate_observations(observations)
 
         mean_cosine = np.mean(np.cos(observations))
@@ -114,7 +170,31 @@ class VonMises(RandonVariable):
     def _estimate_concentration(
         resultant_length,
     ):
+        """Invert the Bessel-function ratio.
+
+        Parameters
+        ----------
+        resultant_length : float
+            Sample mean resultant length strictly between zero and one.
+
+        Returns
+        -------
+        float
+            Maximum-likelihood concentration estimate.
+        """
         def equation(concentration):
+            """Evaluate the scalar concentration root equation.
+
+            Parameters
+            ----------
+            concentration : float
+                Candidate nonnegative concentration.
+
+            Returns
+            -------
+            float
+                Difference between the implied and observed resultant lengths.
+            """
             if concentration == 0:
                 ratio = 0.0
             else:
@@ -135,6 +215,18 @@ class VonMises(RandonVariable):
 
     @staticmethod
     def _validate_observations(observations):
+        """Validate angular observations.
+
+        Parameters
+        ----------
+        observations : array_like
+            Candidate angular observations.
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_samples,)
+            Finite floating-point angles.
+        """
         try:
             observations = np.asarray(
                 observations,

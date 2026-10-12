@@ -1,3 +1,5 @@
+"""Dirichlet distribution over categorical probability vectors."""
+
 import numpy as np
 from scipy.special import gamma
 
@@ -5,24 +7,44 @@ from .rv import RandonVariable
 
 
 class Dirichlet(RandonVariable):
+    """Represent a Dirichlet distribution.
+
+    Parameters
+    ----------
+    alpha : array_like of shape (n_classes,)
+        Positive concentration parameters for at least two categories.
+
+    Attributes
+    ----------
+    size : int
+        Number of categories.
+    mean : numpy.ndarray of shape (n_classes,)
+        Mean probability vector.
+    """
+
     def __init__(self, alpha):
+        """Initialize the concentration vector."""
         super().__init__()
         self.alpha = alpha
 
     @property
     def alpha(self):
+        """Return the concentration vector."""
         return self.parameters["alpha"]
 
     @property
     def size(self):
+        """Return the number of categories."""
         return self.alpha.size
 
     @property
     def mean(self):
+        """Return the mean probability vector."""
         return self.alpha / self.alpha.sum()
 
     @alpha.setter
     def alpha(self, value):
+        """Set the positive concentration vector."""
         value = np.asarray(value, dtype=float)
         if value.ndim != 1:
             raise ValueError("alpha must contain at least two values")
@@ -35,6 +57,18 @@ class Dirichlet(RandonVariable):
         self.parameters["alpha"] = value.copy()
 
     def _pdf(self, mu):
+        """Evaluate density for probability vectors.
+
+        Parameters
+        ----------
+        mu : array_like of shape (n_classes,) or (n_samples, n_classes)
+            Probability vectors on the simplex.
+
+        Returns
+        -------
+        float or numpy.ndarray of shape (n_samples,)
+            Density for each probability vector.
+        """
         mu = np.asarray(mu)
         single_point = mu.ndim == 1
         mu = self._valid_mu(mu)
@@ -46,12 +80,25 @@ class Dirichlet(RandonVariable):
         return density
 
     def _draw(self, sample_size, rng):
+        """Draw probability vectors from the Dirichlet distribution."""
         return rng.dirichlet(
             self.alpha,
             size=sample_size,
         )
 
     def _valid_mu(self, mu):
+        """Validate probability vectors.
+
+        Parameters
+        ----------
+        mu : array_like
+            Candidate probability vectors.
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_samples, n_classes)
+            Validated probability vectors.
+        """
         mu = np.asarray(mu, dtype=float)
         if mu.ndim == 1:
             mu = mu.reshape(1, -1)

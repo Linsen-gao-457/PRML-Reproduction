@@ -1,20 +1,40 @@
+"""Multivariate Gaussian distribution."""
+
 import numpy as np
 
 from .rv import RandonVariable
 
 
 class MultivariateGaussian(RandonVariable):
+    """Represent a Gaussian random vector.
+
+    Parameters
+    ----------
+    mean : array_like of shape (n_features,) or None, default=None
+        Mean vector, or ``None`` before parameters are supplied.
+    cov : array_like of shape (n_features, n_features) or None, default=None
+        Symmetric positive-definite covariance matrix.
+
+    Attributes
+    ----------
+    inv_cov : numpy.ndarray or None
+        Inverse covariance matrix computed when ``cov`` is assigned.
+    """
+
     def __init__(self, mean=None, cov=None):
+        """Initialize the mean vector and covariance matrix."""
         super().__init__()
         self.mean = mean
         self.cov = cov
 
     @property
     def mean(self):
+        """Return the mean vector."""
         return self.parameters["mean"]
 
     @mean.setter
     def mean(self, value):
+        """Set the finite mean vector."""
         if value is None:
             self.parameters["mean"] = None
             return
@@ -37,10 +57,12 @@ class MultivariateGaussian(RandonVariable):
 
     @property
     def cov(self):
+        """Return the covariance matrix."""
         return self.parameters["cov"]
 
     @cov.setter
     def cov(self, value):
+        """Set a symmetric positive-definite covariance matrix."""
         if value is None:
             self.parameters["cov"] = None
             self.parameters["inv_cov"] = None
@@ -79,9 +101,22 @@ class MultivariateGaussian(RandonVariable):
 
     @property
     def inv_cov(self):
+        """Return the inverse covariance matrix."""
         return self.parameters["inv_cov"]
 
     def _pdf(self, x):
+        """Evaluate the multivariate Gaussian density.
+
+        Parameters
+        ----------
+        x : array_like of shape (n_features,) or (n_samples, n_features)
+            Evaluation vectors.
+
+        Returns
+        -------
+        float or numpy.ndarray of shape (n_samples,)
+            Density for each vector.
+        """
         self._check_parameters()
         x = np.asarray(x, dtype=float)
         single_point_sign = x.ndim == 1
@@ -112,6 +147,7 @@ class MultivariateGaussian(RandonVariable):
         return density.item() if single_point_sign else density
 
     def _draw(self, sample_size, rng):
+        """Draw multivariate Gaussian samples."""
         self._check_parameters()
 
         return rng.multivariate_normal(
@@ -121,6 +157,7 @@ class MultivariateGaussian(RandonVariable):
         )
 
     def _check_parameters(self):
+        """Raise an error when mean or covariance is unknown."""
         if self.mean is None:
             raise RuntimeError("mean is unknown")
 

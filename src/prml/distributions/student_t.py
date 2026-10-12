@@ -1,3 +1,5 @@
+"""Univariate Student's t distribution with EM-style fitting."""
+
 import numpy as np
 from scipy.special import digamma, gammaln
 
@@ -5,7 +7,20 @@ from .rv import RandonVariable
 
 
 class Student_T(RandonVariable):
+    """Represent, sample, and fit a Student's t distribution.
+
+    Parameters
+    ----------
+    mean : float, default=0.0
+        Location parameter.
+    precision : float, default=1.0
+        Positive precision parameter.
+    degree_of_freedom : float, default=1.0
+        Positive degrees-of-freedom parameter.
+    """
+
     def __init__(self, mean=0.0, precision=1.0, degree_of_freedom=1.0):
+        """Initialize location, precision, and degrees of freedom."""
         super().__init__()
         self.mean = mean
         self.precision = precision
@@ -13,10 +28,12 @@ class Student_T(RandonVariable):
 
     @property
     def mean(self):
+        """Return the location parameter."""
         return self.parameters["mean"]
 
     @mean.setter
     def mean(self, value):
+        """Set the finite location parameter."""
         if not np.isscalar(value):
             raise TypeError("mean must be a scalar")
 
@@ -28,10 +45,12 @@ class Student_T(RandonVariable):
 
     @property
     def precision(self):
+        """Return the precision parameter."""
         return self.parameters["precision"]
 
     @precision.setter
     def precision(self, value):
+        """Set the positive precision parameter."""
         if not np.isscalar(value):
             raise TypeError("precision must be a scalar")
 
@@ -47,10 +66,12 @@ class Student_T(RandonVariable):
 
     @property
     def degree_of_freedom(self):
+        """Return the degrees-of-freedom parameter."""
         return self.parameters["degree_of_freedom"]
 
     @degree_of_freedom.setter
     def degree_of_freedom(self, value):
+        """Set the positive degrees-of-freedom parameter."""
         if not np.isscalar(value):
             raise TypeError("degree_of_freedom must be a scalar")
 
@@ -65,6 +86,18 @@ class Student_T(RandonVariable):
         self.parameters["degree_of_freedom"] = value
 
     def _pdf(self, x):
+        """Evaluate the Student's t density.
+
+        Parameters
+        ----------
+        x : numpy.ndarray
+            Evaluation points.
+
+        Returns
+        -------
+        float or numpy.ndarray
+            Density at each point.
+        """
         nu = self.degree_of_freedom
         squared_error = (x - self.mean) ** 2
         log_normalization = (
@@ -77,6 +110,7 @@ class Student_T(RandonVariable):
         return density.item() if density.ndim == 0 else density
 
     def _draw(self, sample_size, rng):
+        """Draw Student's t samples."""
         scale = 1.0 / np.sqrt(self.precision)
         return self.mean + scale * rng.standard_t(
             df=self.degree_of_freedom,
@@ -90,6 +124,29 @@ class Student_T(RandonVariable):
         max_iterations=1000,
         tolerance=1e-6,
     ):
+        """Estimate parameters with latent-scale expectation maximization.
+
+        Parameters
+        ----------
+        observations : array_like of shape (n_samples,)
+            At least two finite observations with positive variance.
+        learning_rate : float, default=0.01
+            Step size for the degrees-of-freedom update.
+        max_iterations : int, default=1000
+            Maximum number of EM iterations.
+        tolerance : float, default=1e-6
+            Relative and absolute parameter convergence tolerance.
+
+        Returns
+        -------
+        Student_T
+            Fitted distribution.
+
+        Raises
+        ------
+        RuntimeError
+            If fitting does not converge or degrees of freedom becomes invalid.
+        """
         observations = self._validate_observations(observations)
 
         variance = np.var(observations)
@@ -128,6 +185,20 @@ class Student_T(RandonVariable):
         raise RuntimeError("Student-t fitting did not converge")
 
     def _expectation(self, observations):
+        """Compute expected latent scales.
+
+        Parameters
+        ----------
+        observations : numpy.ndarray of shape (n_samples,)
+            Validated observations.
+
+        Returns
+        -------
+        expected_eta : numpy.ndarray of shape (n_samples,)
+            Expected latent scales.
+        expected_log_eta : numpy.ndarray of shape (n_samples,)
+            Expected logarithms of latent scales.
+        """
         nu = self.degree_of_freedom
 
         squared_error = (observations - self.mean) ** 2
@@ -147,6 +218,7 @@ class Student_T(RandonVariable):
         expected_log_eta,
         learning_rate,
     ):
+        """Update all distribution parameters for one EM iteration."""
         new_mean = np.sum(expected_eta * observations) / np.sum(expected_eta)
 
         weighted_squared_error = np.mean(expected_eta * (observations - new_mean) ** 2)
@@ -177,6 +249,13 @@ class Student_T(RandonVariable):
         self.degree_of_freedom = new_degree_of_freedom
 
     def _pack_parameters(self):
+        """Pack current parameters for convergence testing.
+
+        Returns
+        -------
+        numpy.ndarray of shape (3,)
+            Mean, precision, and degrees of freedom.
+        """
         return np.array(
             [
                 self.mean,
@@ -187,6 +266,18 @@ class Student_T(RandonVariable):
 
     @staticmethod
     def _validate_observations(observations):
+        """Validate a univariate sample.
+
+        Parameters
+        ----------
+        observations : array_like
+            Candidate observations.
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_samples,)
+            Finite floating-point observations.
+        """
         try:
             observations = np.asarray(
                 observations,
