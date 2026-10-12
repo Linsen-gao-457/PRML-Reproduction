@@ -1,0 +1,23 @@
+seed: 123
+
+data:
+  number_of_datasets: 100
+  sample_size: 25
+  noise_std: 0.5
+
+model:
+  number_of_centers: 24
+  width: 0.1
+  log_regularization_values:
+    - 2.6
+    - 1.5
+    - -2.4
+plot:
+  x_min: 0.0
+  x_max: 1.0
+  y_min: -1.6
+  y_max: 1.6
+  grid_points: 500
+  number_of_displayed_fits: 20
+
+output: outputs/figures/ch03/figure_3_5.png
