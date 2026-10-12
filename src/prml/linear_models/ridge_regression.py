@@ -24,7 +24,6 @@ class RidgeRegression:
         self.regularization = regularization
         self._coef = None
 
-    # X (N,M), N is the batch size, M is the degree of polynomials
     def fit(self, design_matrix, targets):
         """Estimate coefficients using the regularized normal equation.
 
