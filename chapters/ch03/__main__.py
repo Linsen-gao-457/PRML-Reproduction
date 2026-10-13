@@ -3,6 +3,7 @@ import argparse
 from .figure_3_1 import run as run_1
 from .figure_3_2_plus import run as run_2
 from .figure_3_5 import run as run_5
+from .figure_3_7 import run as run_6
 from .ridge_regression import run as run_4
 from .sequential_learning import run as run_3
 
@@ -12,6 +13,7 @@ EXPERIMENTS = {
     "3": ("Running sequential learning", run_3),
     "4": ("Running ridge regression", run_4),
     "5": ("Running figure 3.5", run_5),
+    "6": ("Running figure 3.7", run_6),
 }
 
 
