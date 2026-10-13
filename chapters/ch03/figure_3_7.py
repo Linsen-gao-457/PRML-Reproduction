@@ -42,12 +42,88 @@ def normalized_density(distribution, grid):
     return density / maximum
 
 
-def draw_weight_space(axis, grids, density, values, config, weights_true):
-    pass
+def draw_weight_space(axis, grids, density, weight_values, config, weights_true):
+    axis.contourf(
+        (weight_values, weight_values),
+        density,
+        levels=config["plot"]["contour_levels"],
+        cmap="jet",
+    )
+    axis.plot(
+        weights_true[0],
+        weights_true[1],
+        marker="+",
+        color="white",
+        markersize=8,
+        markeredgewidth=1.5,
+    )
+    axis.set_xlabel(r"$w_0$")
+    axis.set_ylabel(
+        r"$w_1$",
+        rotation=0,
+    )
+    axis.set_xlim(-1, 1)
+
+    axis.set_ylim(-1, 1)
+    axis.tick_params(
+        direction="in",
+        top=True,
+        right=True,
+    )
 
 
-def draw_data_space(axis, model, observed_x, observed_y, config, rng):
-    pass
+def draw_data_space(axis, model, observed_x, observed_t, config, rng):
+    data_config = config["data"]
+    plot_config = config["plot"]
+    x = np.linspace(
+        data_config["x_min"],
+        data_config["x_max"],
+        plot_config["line_points"],
+    )
+    sample_weights = model.sample_weights(
+        sample_size=config["model"]["weight_samples"], rng=rng
+    )
+    x_0 = np.stack(
+        (
+            np.ones_like(x.size),
+            x,
+        ),
+        axis=1,
+    )
+    for weight in sample_weights:
+        y = np.dot(x_0, weight)
+        axis.plot(
+            x,
+            y,
+            color="red",
+        )
+    if observed_x.size > 0:
+        axis.scatter(
+            observed_x,
+            observed_t,
+            facecolors="none",
+            edgecolors="blue",
+        )
+    axis.set_xlim(
+        data_config["x_min"],
+        data_config["x_max"],
+    )
+
+    axis.set_ylim(
+        plot_config["target_min"],
+        plot_config["target_max"],
+    )
+
+    axis.set_xlabel(r"$x$")
+    axis.set_ylabel(
+        r"$y$",
+        rotation=0,
+    )
+    axis.tick_params(
+        direction="in",
+        top=True,
+        right=True,
+    )
 
 
 def normalized_likelihood(
@@ -97,7 +173,7 @@ def create_figure(config, rng):
         axis=axes[0, 2],
         model=model,
         observed_x=[],
-        observed_y=[],
+        observed_t=[],
         config=config,
         rng=rng,
     )
@@ -120,7 +196,7 @@ def create_figure(config, rng):
         row = displayed_rows[count]
         draw_weight_space(
             axis=axes[row, 0],
-            values=weight_values,
+            weights_true=weight_values,
             density=likelihood,
             true_weights=weights_true,
             config=config,
@@ -132,7 +208,7 @@ def create_figure(config, rng):
 
         draw_weight_space(
             axis=axes[row, 1],
-            values=weight_values,
+            weights_true=weight_values,
             density=posterior_density,
             true_weights=weights_true,
             config=config,
@@ -142,7 +218,7 @@ def create_figure(config, rng):
             axis=axes[row, 2],
             model=model,
             observed_x=x_data[:count],
-            observed_targets=t[:count],
+            observed_t=t[:count],
             config=config,
             rng=rng,
         )
