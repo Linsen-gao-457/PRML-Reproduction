@@ -59,8 +59,11 @@ class BayesianLinearRegression:
     def udpate(basis, target):
         pass
 
-    def sample_weight(sample_size, rng):
-        pass
+    def sample_weight(self, sample_size, rng):
+        return self.posterior.draw(
+            sample_size=sample_size,
+            rng=rng,
+        )
 
     def _validate_training_data(
         self,
