@@ -17,7 +17,7 @@ def normalized_density(distribution, grid):
     pass
 
 
-def draw_weight_space(axis, grids, values, config, weights_true):
+def draw_weight_space(axis, grids, density, values, config, weights_true):
     pass
 
 
@@ -65,6 +65,7 @@ def create_figure(config, rng):
         axis=axes[0, 1],
         grids=parameter_grid,
         config=config,
+        density=prior_density,
         weights_true=weights_true,
     )
     draw_data_space(
