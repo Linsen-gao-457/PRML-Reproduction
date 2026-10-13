@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from prml.distributions.multivariate_gaussian import MultivariateGaussian
+from prml.distributions.uniform import Uniform
 from prml.linear_models.bayesian_linear_regression import BayesianLinearRegression
 from prml.utils.config import load_config
 from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
@@ -10,7 +11,25 @@ from prml.utils.random import create_rng
 
 
 def create_data(config, rng):
-    pass
+    config = config["data"]
+    x_distribution = Uniform(
+        low=config["x_min"],
+        high=config["x_max"],
+    )
+    x = x_distribution.draw(
+        config["sample_size"],
+        rng,
+    )
+    x = np.stack([np.ones_like(x), x], axis=1)
+    weights_true = np.asarray(
+        [
+            config["bias"],
+            config["slope"],
+        ]
+    )
+    t = np.dot(x, weights_true)
+    t += rng.normal(scale=config["noise_std"], size=x.size)
+    return x, t, weights_true
 
 
 def normalized_density(distribution, grid):
@@ -117,7 +136,7 @@ def create_figure(config, rng):
             axis=axes[row, 2],
             model=model,
             observed_x=x_data[:count],
-            observed_targets=(t[:count]),
+            observed_targets=t[:count],
             config=config,
             rng=rng,
         )
@@ -131,7 +150,7 @@ def run():
 
     rng = create_rng(seed=config["seed"])
 
-    figure = create_figure()
+    figure = create_figure(config, rng)
 
     output = save_figure(
         figure,
