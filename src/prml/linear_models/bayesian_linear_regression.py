@@ -56,7 +56,13 @@ class BayesianLinearRegression:
     def posterior_covariance(self):
         return self.posterior.cov
 
+    def fit(self, design_matrix, targets):
+        pass
+
     def udpate(basis, target):
+        pass
+
+    def predict(self):
         pass
 
     def sample_weight(self, sample_size, rng):
