@@ -1,0 +1,21 @@
+seed: 123
+data:
+  sample_size: 20
+  x_min: -1.0
+  x_max: 1.0
+  slope: 0.5
+  bias: -0.3
+  noise_std: 0.2
+
+model:
+  alpha: 2.0
+  weights_sample_size: 6
+
+plot:
+  weight_min: -1.0
+  weight_max: 1.0
+  target_min: -1.0
+  target_max: 1.0
+  grid_points: 200
+  line_points: 200
+  contour_levels: 50
