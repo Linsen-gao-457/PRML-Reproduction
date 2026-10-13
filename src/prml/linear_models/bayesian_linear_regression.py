@@ -30,8 +30,23 @@ class BayesianLinearRegression:
         self._prior = value
 
     @property
-    def precision():
-        pass
+    def precision(self):
+        return self._prior
+
+    @precision.setter
+    def precision(self, value):
+        if not np.isscalar(value):
+            raise TypeError("noise_precision must be a scalar")
+
+        value = float(value)
+
+        if not np.isfinite(value):
+            raise ValueError("noise_precision must be finite")
+
+        if value <= 0:
+            raise ValueError("noise_precision must be positive")
+
+        self._noise_precision = value
 
     def udpate(basis, target):
         pass
