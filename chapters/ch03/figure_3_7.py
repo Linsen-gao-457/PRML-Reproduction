@@ -11,43 +11,46 @@ from prml.utils.random import create_rng
 
 
 def create_data(config, rng):
-    config = config["data"]
+    data_config = config["data"]
     x_distribution = Uniform(
-        low=config["x_min"],
-        high=config["x_max"],
+        low=data_config["x_min"],
+        high=data_config["x_max"],
     )
     x = x_distribution.draw(
-        config["sample_size"],
+        data_config["sample_size"],
         rng,
     )
-    x = np.stack([np.ones_like(x), x], axis=1)
+    x_0 = np.column_stack(
+        (np.ones_like(x), x),
+    )
     weights_true = np.asarray(
         [
-            config["bias"],
-            config["slope"],
+            data_config["bias"],
+            data_config["slope"],
         ]
     )
-    t = np.dot(x, weights_true)
-    t += rng.normal(scale=config["noise_std"], size=x.size)
+    t = np.dot(x_0, weights_true)
+    t += rng.normal(scale=data_config["noise_std"], size=x.size)
     return x, t, weights_true
 
 
 def normalized_density(distribution, grid):
     points = grid.reshape(-1, 2)
     density = distribution.pdf(points)
-    maximum = density.max()
     density = density.reshape(grid.shape[:2])
+    maximum = density.max()
     if maximum == 0:
         return density
     return density / maximum
 
 
-def draw_weight_space(axis, grids, density, weight_values, config, weights_true):
+def draw_weight_space(axis, density, weight_values, config, weights_true):
     axis.contourf(
-        (weight_values, weight_values),
+        weight_values,
+        weight_values,
         density,
         levels=config["plot"]["contour_levels"],
-        cmap="jet",
+        cmap="turbo",
     )
     axis.plot(
         weights_true[0],
@@ -65,6 +68,9 @@ def draw_weight_space(axis, grids, density, weight_values, config, weights_true)
     axis.set_xlim(-1, 1)
 
     axis.set_ylim(-1, 1)
+    axis.set_aspect("equal")
+    axis.set_xticks([-1, 0, 1])
+    axis.set_yticks([-1, 0, 1])
     axis.tick_params(
         direction="in",
         top=True,
@@ -80,29 +86,28 @@ def draw_data_space(axis, model, observed_x, observed_t, config, rng):
         data_config["x_max"],
         plot_config["line_points"],
     )
-    sample_weights = model.sample_weights(
-        sample_size=config["model"]["weight_samples"], rng=rng
+    sample_weights = model.sample_weight(
+        sample_size=config["model"]["weights_sample_size"], rng=rng
     )
-    x_0 = np.stack(
-        (
-            np.ones_like(x.size),
-            x,
-        ),
-        axis=1,
-    )
+    x_0 = np.column_stack((np.ones_like(x), x))
     for weight in sample_weights:
         y = np.dot(x_0, weight)
         axis.plot(
             x,
             y,
-            color="red",
+            color="#ef233c",
+            linewidth=1.35,
+            alpha=0.9,
         )
-    if observed_x.size > 0:
+    if len(observed_x) > 0:
         axis.scatter(
             observed_x,
             observed_t,
             facecolors="none",
-            edgecolors="blue",
+            edgecolors="#2457d6",
+            linewidths=1.5,
+            s=36,
+            zorder=3,
         )
     axis.set_xlim(
         data_config["x_min"],
@@ -119,6 +124,9 @@ def draw_data_space(axis, model, observed_x, observed_t, config, rng):
         r"$y$",
         rotation=0,
     )
+    axis.set_aspect("equal")
+    axis.set_xticks([-1, 0, 1])
+    axis.set_yticks([-1, 0, 1])
     axis.tick_params(
         direction="in",
         top=True,
@@ -132,7 +140,10 @@ def normalized_likelihood(
     target,
     noise_precision,
 ):
-    pass
+    prediction = grid[..., 0] + grid[..., 1] * x
+    squared_error = (target - prediction) ** 2
+    density = np.exp(-0.5 * noise_precision * squared_error)
+    return density / density.max()
 
 
 def create_figure(config, rng):
@@ -155,6 +166,8 @@ def create_figure(config, rng):
     figure, axes = plt.subplots(
         4,
         3,
+        figsize=config["plot"]["figure_size"],
+        constrained_layout=True,
     )
     axes[0, 0].set_title("likelihood")
     axes[0, 0].axis("off")
@@ -164,10 +177,10 @@ def create_figure(config, rng):
     prior_density = normalized_density(model.prior, parameter_grid)
     draw_weight_space(
         axis=axes[0, 1],
-        grids=parameter_grid,
         config=config,
         density=prior_density,
         weights_true=weights_true,
+        weight_values=weight_values,
     )
     draw_data_space(
         axis=axes[0, 2],
@@ -187,18 +200,18 @@ def create_figure(config, rng):
             grid=parameter_grid,
             x=x,
             target=t,
-            noise_precision=(model.noise_precision),
+            noise_precision=(model.precision),
         )
         basis = np.array([1.0, x])
-        model.udpate(basis=basis, target=t)
+        model.update(basis=basis, target=t)
         if count not in displayed_rows:
             continue
         row = displayed_rows[count]
         draw_weight_space(
             axis=axes[row, 0],
-            weights_true=weight_values,
+            weight_values=weight_values,
             density=likelihood,
-            true_weights=weights_true,
+            weights_true=weights_true,
             config=config,
         )
         posterior_density = normalized_density(
@@ -208,22 +221,26 @@ def create_figure(config, rng):
 
         draw_weight_space(
             axis=axes[row, 1],
-            weights_true=weight_values,
+            weights_true=weights_true,
             density=posterior_density,
-            true_weights=weights_true,
             config=config,
+            weight_values=weight_values,
         )
 
         draw_data_space(
             axis=axes[row, 2],
             model=model,
             observed_x=x_data[:count],
-            observed_t=t[:count],
+            observed_t=t_data[:count],
             config=config,
             rng=rng,
         )
 
-    figure.tight_layout()
+    figure.suptitle(
+        "Sequential Bayesian Linear Regression",
+        fontsize=16,
+        fontweight="semibold",
+    )
     return figure
 
 

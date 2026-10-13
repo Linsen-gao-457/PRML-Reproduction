@@ -19,3 +19,6 @@ plot:
   grid_points: 200
   line_points: 200
   contour_levels: 50
+  figure_size: [8.5, 11.0]
+
+output: outputs/figures/ch03/figure_3_7.png
