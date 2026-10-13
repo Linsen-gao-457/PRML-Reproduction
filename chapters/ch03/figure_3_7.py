@@ -3,7 +3,7 @@ import numpy as np
 
 from prml.distributions.multivariate_gaussian import MultivariateGaussian
 from prml.distributions.uniform import Uniform
-from prml.linear_models.bayesian_linear_regression import BayesianLinearRegression
+from prml.linear_models import BayesianLinearRegression
 from prml.utils.config import load_config
 from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
 from prml.utils.plotting import save_figure
