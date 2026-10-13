@@ -62,8 +62,22 @@ class BayesianLinearRegression:
     def udpate(basis, target):
         pass
 
-    def predict(self):
-        pass
+    def predict(self, design_matrix):
+        design_matrix = np.asarray(
+            design_matrix,
+            dtype=float,
+        )
+
+        if design_matrix.ndim != 2:
+            raise ValueError("design_matrix must be two-dimensional")
+
+        if design_matrix.shape[1] != self.posterior.mean.size:
+            raise ValueError("design_matrix has the wrong number of features")
+
+        if not np.all(np.isfinite(design_matrix)):
+            raise ValueError("design_matrix must contain only finite values")
+
+        return np.dot(design_matrix, self.posterior.mean)
 
     def sample_weight(self, sample_size, rng):
         return self.posterior.draw(
