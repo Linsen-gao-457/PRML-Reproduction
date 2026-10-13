@@ -33,7 +33,13 @@ def create_data(config, rng):
 
 
 def normalized_density(distribution, grid):
-    pass
+    points = grid.reshape(-1, 2)
+    density = distribution.pdf(points)
+    maximum = density.max()
+    density = density.reshape(grid.shape[:2])
+    if maximum == 0:
+        return density
+    return density / maximum
 
 
 def draw_weight_space(axis, grids, density, values, config, weights_true):
