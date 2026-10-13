@@ -46,10 +46,54 @@ class BayesianLinearRegression:
         if value <= 0:
             raise ValueError("noise_precision must be positive")
 
-        self._noise_precision = value
+        self._precision = value
+
+    @property
+    def posterior_mean(self):
+        return self.posterior.mean
+
+    @property
+    def posterior_covariance(self):
+        return self.posterior.cov
 
     def udpate(basis, target):
         pass
 
     def sample_weight(sample_size, rng):
         pass
+
+    def _validate_training_data(
+        self,
+        design_matrix,
+        targets,
+    ):
+        design_matrix = np.asarray(
+            design_matrix,
+            dtype=float,
+        )
+        targets = np.asarray(
+            targets,
+            dtype=float,
+        )
+
+        if design_matrix.ndim != 2:
+            raise ValueError("design_matrix must be two-dimensional")
+
+        if targets.ndim != 1:
+            raise ValueError("targets must be one-dimensional")
+
+        if design_matrix.shape[0] != targets.size:
+            raise ValueError(
+                "design_matrix and targets must contain the same number of observations"
+            )
+
+        if design_matrix.shape[1] != self.prior.mean.size:
+            raise ValueError("design_matrix has the wrong number of features")
+
+        if not np.all(np.isfinite(design_matrix)):
+            raise ValueError("design_matrix must contain only finite values")
+
+        if not np.all(np.isfinite(targets)):
+            raise ValueError("targets must contain only finite values")
+
+        return design_matrix, targets
