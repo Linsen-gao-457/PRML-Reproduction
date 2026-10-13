@@ -80,8 +80,44 @@ class BayesianLinearRegression:
 
         return self
 
-    def udpate(basis, target):
-        pass
+    def udpate(self, basis, target):
+        basis = np.asarray(
+            basis,
+            dtype=float,
+        )
+
+        if basis.shape != self.posterior.mean.shape:
+            raise ValueError("basis must have shape (n_features,)")
+
+        if not np.all(np.isfinite(basis)):
+            raise ValueError("basis must contain only finite values")
+
+        if not np.isscalar(target):
+            raise TypeError("target must be a scalar")
+
+        target = float(target)
+        if not np.isfinite(target):
+            raise ValueError("target must be finite")
+        current_precision = self.posterior.inv_cov
+        current_mean = current_precision @ self.posterior.mean
+        updated_precision = current_precision + self.precision * np.outer(basis, basis)
+        updated_natural_mean = current_mean + self.precision * basis * target
+        identity = np.eye(basis.size)
+
+        updated_covariance = np.linalg.solve(
+            updated_precision,
+            identity,
+        )
+        updated_mean = np.linalg.solve(
+            updated_precision,
+            updated_natural_mean,
+        )
+        self.posterior = MultivariateGaussian(
+            mean=updated_mean,
+            cov=updated_covariance,
+        )
+
+        return self
 
     def predict(self, design_matrix):
         design_matrix = np.asarray(
