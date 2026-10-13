@@ -57,7 +57,28 @@ class BayesianLinearRegression:
         return self.posterior.cov
 
     def fit(self, design_matrix, targets):
-        pass
+        design_matrix, targets = self._validate_training_data(
+            design_matrix,
+            targets,
+        )
+        posterior_precision = (
+            self.prior.inv_cov + self.precision * design_matrix.T @ design_matrix
+        )
+        posterior_covariance = np.linalg.solve(
+            posterior_precision,
+            np.eye(self.prior.mean.size),
+        )
+        posterior_natural_mean = (
+            self.prior.inv_cov @ self.prior.mean
+            + self.noise_precision * design_matrix.T @ targets
+        )
+        posterior_mean = posterior_covariance @ posterior_natural_mean
+        self.posterior = MultivariateGaussian(
+            mean=posterior_mean,
+            cov=posterior_covariance,
+        )
+
+        return self
 
     def udpate(basis, target):
         pass
