@@ -31,7 +31,7 @@ class BayesianLinearRegression:
 
     @property
     def precision(self):
-        return self._prior
+        return self._precision
 
     @precision.setter
     def precision(self, value):
@@ -70,7 +70,7 @@ class BayesianLinearRegression:
         )
         posterior_natural_mean = (
             self.prior.inv_cov @ self.prior.mean
-            + self.noise_precision * design_matrix.T @ targets
+            + self.precision * design_matrix.T @ targets
         )
         posterior_mean = posterior_covariance @ posterior_natural_mean
         self.posterior = MultivariateGaussian(
@@ -80,7 +80,7 @@ class BayesianLinearRegression:
 
         return self
 
-    def udpate(self, basis, target):
+    def update(self, basis, target):
         basis = np.asarray(
             basis,
             dtype=float,
@@ -99,9 +99,9 @@ class BayesianLinearRegression:
         if not np.isfinite(target):
             raise ValueError("target must be finite")
         current_precision = self.posterior.inv_cov
-        current_mean = current_precision @ self.posterior.mean
+        current_natural_mean = current_precision @ self.posterior.mean
         updated_precision = current_precision + self.precision * np.outer(basis, basis)
-        updated_natural_mean = current_mean + self.precision * basis * target
+        updated_natural_mean = current_natural_mean + self.precision * basis * target
         identity = np.eye(basis.size)
 
         updated_covariance = np.linalg.solve(
