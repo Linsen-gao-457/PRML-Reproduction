@@ -5,6 +5,7 @@ from .figure_3_2_plus import run as run_2
 from .figure_3_5 import run as run_5
 from .figure_3_7 import run as run_6
 from .figure_3_8 import run as run_7
+from .figure_3_9 import run as run_8
 from .ridge_regression import run as run_4
 from .sequential_learning import run as run_3
 
@@ -16,6 +17,7 @@ EXPERIMENTS = {
     "5": ("Running figure 3.5", run_5),
     "6": ("Running figure 3.7", run_6),
     "7": ("Running figure 3.8", run_7),
+    "8": ("Running figure 3.9", run_8),
 }
 
 
