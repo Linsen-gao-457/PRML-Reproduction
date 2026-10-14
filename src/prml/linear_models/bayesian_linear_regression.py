@@ -1,14 +1,39 @@
+"""Bayesian linear regression with a Gaussian weight prior."""
+
 import numpy as np
 
 from prml.distributions.multivariate_gaussian import MultivariateGaussian
 
 
 class BayesianLinearRegression:
+    """Fit a linear basis-function model by Bayesian inference.
+
+    The model assumes Gaussian observation noise with known precision and a
+    multivariate Gaussian prior over the weight vector. The posterior is
+    available after either a batch fit or one or more sequential updates.
+
+    Parameters
+    ----------
+    prior : MultivariateGaussian
+        Prior distribution over the ``n_features`` model weights. Its mean
+        and covariance must both be known.
+    precision : float
+        Positive observation-noise precision, equal to the reciprocal of the
+        observation-noise variance.
+
+    Attributes
+    ----------
+    posterior : MultivariateGaussian
+        Current posterior distribution over the weight vector. It initially
+        equals the prior.
+    """
+
     def __init__(
         self,
         prior,
         precision,
     ):
+        """Initialize the model from a weight prior and noise precision."""
         self.prior = prior
         self.precision = precision
         self.posterior = MultivariateGaussian(
@@ -17,6 +42,7 @@ class BayesianLinearRegression:
 
     @property
     def prior(self):
+        """MultivariateGaussian: Prior distribution over model weights."""
         return self._prior
 
     @prior.setter
@@ -31,6 +57,7 @@ class BayesianLinearRegression:
 
     @property
     def precision(self):
+        """float: Observation-noise precision."""
         return self._precision
 
     @precision.setter
@@ -50,13 +77,35 @@ class BayesianLinearRegression:
 
     @property
     def posterior_mean(self):
+        """numpy.ndarray of shape (n_features,): Posterior weight mean."""
         return self.posterior.mean
 
     @property
     def posterior_covariance(self):
+        """Return the posterior covariance with shape (n_features, n_features)."""
         return self.posterior.cov
 
     def fit(self, design_matrix, targets):
+        """Compute the posterior from a complete training dataset.
+
+        Parameters
+        ----------
+        design_matrix : array_like of shape (n_samples, n_features)
+            Basis-function values for every training observation.
+        targets : array_like of shape (n_samples,)
+            Scalar target value for every training observation.
+
+        Returns
+        -------
+        BayesianLinearRegression
+            Fitted model with an updated posterior distribution.
+
+        Raises
+        ------
+        ValueError
+            If the input dimensions are incompatible, the feature count does
+            not match the prior, or either input contains a non-finite value.
+        """
         design_matrix, targets = self._validate_training_data(
             design_matrix,
             targets,
@@ -81,6 +130,28 @@ class BayesianLinearRegression:
         return self
 
     def update(self, basis, target):
+        """Update the posterior using one observation.
+
+        Parameters
+        ----------
+        basis : array_like of shape (n_features,)
+            Basis-function vector for one input point.
+        target : float
+            Scalar target associated with ``basis``.
+
+        Returns
+        -------
+        BayesianLinearRegression
+            Model with its posterior updated in place.
+
+        Raises
+        ------
+        TypeError
+            If ``target`` is not scalar.
+        ValueError
+            If ``basis`` has the wrong shape, or if either argument contains
+            a non-finite value.
+        """
         basis = np.asarray(
             basis,
             dtype=float,
@@ -120,6 +191,27 @@ class BayesianLinearRegression:
         return self
 
     def predict(self, design_matrix):
+        """Return the posterior-mean prediction for each input.
+
+        This method returns only the predictive mean ``Phi @ m_N``. It does
+        not include observation noise or posterior parameter uncertainty.
+
+        Parameters
+        ----------
+        design_matrix : array_like of shape (n_samples, n_features)
+            Basis-function values for the inputs to predict.
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_samples,)
+            Prediction from the posterior mean weight vector.
+
+        Raises
+        ------
+        ValueError
+            If the design matrix is not two-dimensional, has the wrong number
+            of features, or contains a non-finite value.
+        """
         design_matrix = np.asarray(
             design_matrix,
             dtype=float,
@@ -137,6 +229,20 @@ class BayesianLinearRegression:
         return np.dot(design_matrix, self.posterior.mean)
 
     def sample_weight(self, sample_size, rng):
+        """Draw weight vectors from the current posterior.
+
+        Parameters
+        ----------
+        sample_size : int
+            Number of weight vectors to draw.
+        rng : numpy.random.Generator
+            Random number generator used for sampling.
+
+        Returns
+        -------
+        numpy.ndarray of shape (sample_size, n_features)
+            Independent samples from the posterior weight distribution.
+        """
         return self.posterior.draw(
             sample_size=sample_size,
             rng=rng,
@@ -147,6 +253,28 @@ class BayesianLinearRegression:
         design_matrix,
         targets,
     ):
+        """Convert and validate batch training inputs.
+
+        Parameters
+        ----------
+        design_matrix : array_like of shape (n_samples, n_features)
+            Basis-function values for every training observation.
+        targets : array_like of shape (n_samples,)
+            Scalar target value for every training observation.
+
+        Returns
+        -------
+        design_matrix : numpy.ndarray of shape (n_samples, n_features)
+            Validated floating-point design matrix.
+        targets : numpy.ndarray of shape (n_samples,)
+            Validated floating-point target vector.
+
+        Raises
+        ------
+        ValueError
+            If the input dimensions are incompatible, the feature count does
+            not match the prior, or either input contains a non-finite value.
+        """
         design_matrix = np.asarray(
             design_matrix,
             dtype=float,
