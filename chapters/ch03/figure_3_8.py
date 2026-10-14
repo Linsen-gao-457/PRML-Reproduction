@@ -28,19 +28,6 @@ def create_data(config, rng):
     return x, targets
 
 
-def predictive_distribution(model, design_matrix, config):
-    mean = model.predict(design_matrix=design_matrix)  # (grid_pints, 1)
-    parameter_variance = np.einsum(
-        "ij,jk,ik->i",
-        design_matrix,
-        model.posterior_covariance,
-        design_matrix,
-    )
-    beta = 1 / config["data"]["noise_std"] ** 2
-    variance = 1 / beta + parameter_variance
-    return mean, np.sqrt(variance)
-
-
 def draw_panel(axis, x_train, targets, x_plot, mean, std, config):
     plot_config = config["plot"]
     axis.fill_between(
@@ -125,9 +112,10 @@ def create_figure(config, rng):
         model.update(basis=basis, target=target)
         if sample_size not in sample_sizes_axes_dict:
             continue
-        mean, std = predictive_distribution(
-            model=model, design_matrix=plotting_matrix, config=config
+        predictive_mean, predictive_variance = model.predictive_distribution(
+            design_matrix=plotting_matrix,
         )
+        mean, std = (predictive_mean, np.sqrt(predictive_variance))
         draw_panel(
             sample_sizes_axes_dict[sample_size],
             x_train[:sample_size],
