@@ -248,6 +248,23 @@ class BayesianLinearRegression:
             rng=rng,
         )
 
+    def predictive_distribution(self, design_matrix):
+        design_matrix = np.asarray(
+            design_matrix,
+            dtype=float,
+        )
+
+        predictive_mean = np.dot(design_matrix, self.posterior.mean)
+
+        predictive_variance = 1.0 / self.precision + np.einsum(
+            "ni,ij,nj->n",
+            design_matrix,
+            self.posterior.cov,
+            design_matrix,
+        )
+
+        return predictive_mean, predictive_variance
+
     def _validate_training_data(
         self,
         design_matrix,
