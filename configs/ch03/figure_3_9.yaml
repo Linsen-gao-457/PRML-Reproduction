@@ -1,0 +1,24 @@
+seed: 123
+
+data:
+  sample_sizes: [1, 2, 4, 25]
+  x_min: 0.0
+  x_max: 1.0
+  noise_std: 0.2
+
+model:
+  number_of_basis_functions: 9
+  basis_width: 0.1
+  alpha: 2.0
+  number_of_weight_samples: 5
+
+plot:
+  target_min: -1.6
+  target_max: 1.6
+  grid_points: 500
+  truth_color: "#00d72f"
+  sample_color: "#ff2020"
+  sample_linewidth: 0.8
+  data_color: "#174cff"
+
+output: outputs/figures/ch03/figure_3_9.png
