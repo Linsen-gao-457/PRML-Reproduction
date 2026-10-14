@@ -25,8 +25,59 @@ def create_data(config, rng):
     return x, targets
 
 
-def draw_panel():
-    pass
+def draw_panel(
+    axis,
+    x_train,
+    targets,
+    x_plot,
+    sampled_functions,
+    config,
+    show_truth,
+):
+    plot_config = config["plot"]
+    data_config = config["data"]
+
+    axis.plot(
+        x_plot,
+        sampled_functions,
+        color=plot_config["sample_color"],
+        linewidth=plot_config["sample_linewidth"],
+    )
+
+    if show_truth:
+        axis.plot(
+            x_plot,
+            sinusodial(x_plot),
+            color=plot_config["truth_color"],
+        )
+
+    axis.scatter(
+        x_train,
+        targets,
+        facecolors="none",
+        edgecolors=plot_config["data_color"],
+        linewidths=1.5,
+        s=36,
+        zorder=3,
+    )
+
+    axis.set_xlim(
+        data_config["x_min"],
+        data_config["x_max"],
+    )
+    axis.set_ylim(
+        plot_config["target_min"],
+        plot_config["target_max"],
+    )
+    axis.set_xlabel(r"$x$")
+    axis.set_ylabel(r"$t$", rotation=0)
+    axis.set_xticks([0, 1])
+    axis.set_yticks([-1, 0, 1])
+    axis.tick_params(
+        direction="in",
+        top=True,
+        right=True,
+    )
 
 
 def create_figure(config, rng):
@@ -101,7 +152,15 @@ def create_figure(config, rng):
             plotting_matrix,
             sampled_weights,
         )
-        draw_panel()
+        draw_panel(
+            axis=axes_by_sample_size[sample_size],
+            x_train=x_train[:sample_size],
+            targets=t_train[:sample_size],
+            x_plot=x_plot,
+            sampled_functions=sample_functions,
+            config=config,
+            show_truth=sample_size == sample_sizes[0],
+        )
 
     figure.tight_layout()
     return figure
