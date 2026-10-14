@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from prml.distributions import MultivariateGaussian
+from prml.distributions import MultivariateGaussian, Uniform
 from prml.linear_models import BayesianLinearRegression, gaussian_basis
 from prml.utils.config import load_config
 from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
@@ -10,11 +10,19 @@ from prml.utils.random import create_rng
 
 
 def sinusodial(x):
-    pass
+    return np.sin(2 * np.pi * x)
 
 
 def create_data(config, rng):
-    pass
+    sample_size = max(config["sample_sizes"])
+    distribution = Uniform(low=config["x_min"], high=config["x_max"])
+    x = distribution.draw(sample_size=sample_size, rng=rng)
+    targets = sinusodial(x) + rng.normal(
+        scale=config["noise_std"],
+        size=sample_size,
+    )
+
+    return x, targets
 
 
 def draw_panel():
@@ -25,7 +33,7 @@ def create_figure(config, rng):
     data_config = config["data"]
     model_config = config["model"]
     plot_config = config["plot"]
-    x_train, t_train = create_data(config, rng)
+    x_train, t_train = create_data(data_config, rng)
     x_plot = np.linspace(
         data_config["x_min"],
         data_config["x_max"],
