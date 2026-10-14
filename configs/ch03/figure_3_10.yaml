@@ -1,0 +1,29 @@
+data:
+  x_min: -1.0
+  x_max: 1.0
+  number_of_points: 200
+  noise_std: 0.2
+
+basis:
+  number_of_centers: 11
+  width: 0.1
+
+model:
+  alpha: 2.0
+
+plot:
+  figure_size: [10.0, 4.5]
+  slice_locations: [0.6, 0.0, -0.6]
+  slice_y_min: -0.02
+  slice_y_max: 0.55
+  width_ratios: [1.0, 1.15]
+  column_spacing: 0.08
+  row_spacing: 0.12
+  color_map: jet
+  interpolation: bilinear
+  slice_color: blue
+  slice_linewidth: 1.5
+  guide_color: "#a9a65a"
+  guide_linewidth: 0.8
+
+output: outputs/figures/ch03/figure_3_10.png
