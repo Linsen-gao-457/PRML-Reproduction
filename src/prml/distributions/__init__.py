@@ -9,6 +9,7 @@ from .gaussian import (
     GaussianMeanPrecisionBayes,
     GaussianPrecisionBayes,
 )
+from .multivariate_gaussian import MultivariateGaussian
 from .normal_gamma import NormalGamma
 from .uniform import Uniform
 from .vonmises import VonMises
@@ -23,6 +24,7 @@ __all__ = [
     "GaussianMeanBayes",
     "GaussianMeanPrecisionBayes",
     "GaussianPrecisionBayes",
+    "MultivariateGaussian",
     "NormalGamma",
     "Uniform",
     "VonMises",
