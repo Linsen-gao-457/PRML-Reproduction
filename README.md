@@ -33,7 +33,7 @@ file under `configs/`, and generated images are grouped by chapter under
 python -m chapters.ch01 all
 python -m chapters.ch02 all
 python -m chapters.ch03 all
-
+python -m chapters.ch04 all
 ```
 
 ## Layout
