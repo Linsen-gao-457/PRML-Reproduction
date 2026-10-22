@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from prml.classification import LogisticRegression, LeastSquaresClassifier
+
+from prml.classification import LeastSquaresClassifier, LogisticRegression
 from prml.utils.config import load_config
 from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
 from prml.utils.plotting import save_figure
@@ -40,8 +41,62 @@ def create_data(config, rng):
     return features, targets, outliers
 
 
-def draw_panel(axis, features, targets, least_squares, logistic_regression, config):
+def least_squares_boundary(model, x):
     pass
+
+
+def logistic_regression_boundary(model, x):
+    pass
+
+
+def draw_panel(axis, features, targets, least_squares, logistic_regression, config):
+    plot_config = config["plot"]
+    red_mask = targets == 1
+    blue_mask = targets == 0
+    axis.scatter(
+        features[red_mask, 0],
+        features[red_mask, 1],
+        marker="x",
+        color=plot_config["red_color"],
+    )
+    axis.scatter(
+        features[blue_mask, 0],
+        features[blue_mask, 1],
+        marker="o",
+        facecolors="none",
+        edgecolors=plot_config["blue_color"],
+    )
+    x = np.linspace(
+        plot_config["x_min"],
+        plot_config["x_max"],
+        plot_config["line_points"],
+    )
+    # axis.plot(
+    #     x,
+    #     least_squares_boundary(
+    #         least_squares,
+    #         x,
+    #     ),
+    #     color=plot_config["least_squares_color"],
+    #     label="least squares",
+    # )
+    # axis.plot(
+    #     x,
+    #     logistic_regression_boundary(
+    #         logistic_regression,
+    #         x,
+    #     ),
+    #     color=plot_config["logistic_regression_color"],
+    #     label="logistic regression",
+    # )
+    axis.set_xlim(
+        plot_config["x_min"],
+        plot_config["x_max"],
+    )
+    axis.set_ylim(
+        plot_config["y_min"],
+        plot_config["y_max"],
+    )
 
 
 def create_figure(config, rng):
