@@ -1,0 +1,46 @@
+seed: 123
+
+data:
+  class_size: 50
+
+  # Red, green, and blue class centers.
+  class_means:
+    - [-1.7, 2.0]
+    - [0.0, -0.1]
+    - [2.1, -2.1]
+
+  # Positive correlation produces the diagonal clusters in Figure 4.5.
+  covariance:
+    - [0.9, 0.65]
+    - [0.65, 0.9]
+
+model:
+  tolerance: 1.0e-8
+  max_iterations: 1000
+
+plot:
+  figure_size: [10.0, 5.0]
+
+  x_min: -6.0
+  x_max: 6.0
+  y_min: -6.0
+  y_max: 6.0
+  ticks: [-6, -4, -2, 0, 2, 4, 6]
+
+  grid_points: 400
+
+  red_color: red
+  green_color: "#00cc22"
+  blue_color: blue
+
+  background_colors:
+    - "#ffdada"
+    - "#d7ffd7"
+    - "#ddddff"
+
+  background_alpha: 0.75
+  boundary_line_width: 1.0
+  marker_size: 45
+  marker_line_width: 1.5
+
+output: outputs/figures/ch04/figure_4_5.png
