@@ -32,7 +32,12 @@ class LeastSquaresClassifier:
             self.coef_ = self._weights.T.copy()
         return self
 
-    def predict(self, feature):
+    def predict(self, features):
+        scores = self.decision_function(features)
+        indice = np.argmax(scores)
+        return self.classes_[indice]
+
+    def decision_function(self, features):
         pass
 
     def _create_design_matrix(self, features):
