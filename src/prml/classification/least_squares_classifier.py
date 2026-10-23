@@ -40,7 +40,7 @@ class LeastSquaresClassifier:
 
     def decision_function(self, features):
         design_matrix = self._create_design_matrix(features)
-        return design_matrix @ self._weights
+        return np.dot(design_matrix, self._weights)
 
     def _create_design_matrix(self, features):
         if not self.fit_intercept:
