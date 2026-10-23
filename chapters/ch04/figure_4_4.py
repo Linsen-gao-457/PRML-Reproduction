@@ -42,7 +42,9 @@ def create_data(config, rng):
 
 
 def least_squares_boundary(model, x):
-    pass
+    slope_difference = model.coef_[1] - model.coef_[0]
+    intercept_difference = model.intercept_[1] - model.intercept_[0]
+    return -(intercept_difference + slope_difference[0] * x) / slope_difference[1]
 
 
 def logistic_regression_boundary(model, x):
