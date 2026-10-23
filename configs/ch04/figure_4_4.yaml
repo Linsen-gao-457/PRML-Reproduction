@@ -1,0 +1,28 @@
+seed: 123
+
+data:
+  class_size: 50
+  red_mean: [-1.0, 1.0]
+  blue_mean: [1.0, -1.0]
+  outlier_mean: [7.5, -7.5]
+  outlier_size: 10
+  outlier_covariance:
+    - [0.1, 0.0]
+    - [0.0, 0.1]
+  covariance:
+    - [1.0, 0.6]
+    - [0.6, 1.0]
+
+plot:
+  x_min: -4.0
+  x_max: 9.0
+  y_min: -9.0
+  y_max: 4.0
+  line_points: 300
+
+  red_color: red
+  blue_color: blue
+  least_squares_color: magenta
+  logistic_regression_color: limegreen
+
+output: outputs/figures/ch04/figure_4_4.png
