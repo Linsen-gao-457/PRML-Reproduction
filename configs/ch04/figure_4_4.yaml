@@ -3,15 +3,15 @@ seed: 123
 data:
   class_size: 50
   red_mean: [-1.0, 1.0]
-  blue_mean: [1.0, -1.0]
+  blue_mean: [1.5, -1.0]
   outlier_mean: [7.5, -7.5]
   outlier_size: 10
   outlier_covariance:
     - [0.1, 0.0]
     - [0.0, 0.1]
   covariance:
-    - [1.0, 0.6]
-    - [0.6, 1.0]
+    - [0.5, 0.75]
+    - [0.75, 0.5]
 
 plot:
   x_min: -4.0
