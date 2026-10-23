@@ -47,8 +47,8 @@ def least_squares_boundary(model, x):
     return -(intercept_difference + slope_difference[0] * x) / slope_difference[1]
 
 
-def logistic_regression_boundary(model, x):
-    pass
+# def logistic_regression_boundary(model, x):
+#     return -(model.intercept_ + model.coef_[0] * x) / model.coef_[1]
 
 
 def draw_panel(axis, features, targets, least_squares, logistic_regression, config):
@@ -73,15 +73,15 @@ def draw_panel(axis, features, targets, least_squares, logistic_regression, conf
         plot_config["x_max"],
         plot_config["line_points"],
     )
-    # axis.plot(
-    #     x,
-    #     least_squares_boundary(
-    #         least_squares,
-    #         x,
-    #     ),
-    #     color=plot_config["least_squares_color"],
-    #     label="least squares",
-    # )
+    axis.plot(
+        x,
+        least_squares_boundary(
+            least_squares,
+            x,
+        ),
+        color=plot_config["least_squares_color"],
+        label="least squares",
+    )
     # axis.plot(
     #     x,
     #     logistic_regression_boundary(
