@@ -2,8 +2,42 @@ seed: 123
 
 data:
   class_size: 100
-  blue_mean: [1, 3.0]
+  blue_mean: [1, 2.8]
   red_mean: [4, 1]
   covariance:
     - [1.25, 0.05]
     - [0.05, 0.20]
+
+plot:
+  blue_color: blue
+  red_color: red
+  marker_size: 14
+
+  mean_line_color: "#00cc22"
+  mean_line_width: 1.0
+
+  x_min: -3.5
+  x_max: 7.5
+  y_min: -3.5
+  y_max: 4.5
+
+  x_ticks: [-2, 2, 6]
+  y_ticks: [-2, 0, 2, 4]
+
+  projection_line_color: black
+  projection_line_style: "--"
+  projection_line_width: 1.0
+  line_padding: 0.12
+
+  histogram_bins: 18
+  histogram_max_height: 0.75
+  histogram_width_fraction: 0.90
+  histogram_edge_color: black
+  histogram_edge_width: 0.7
+
+  # These anchors move the projection axes away from the samples so
+  # the histograms remain visible.
+  mean_projection_anchor: [-2.7, 0.7]
+  fisher_projection_anchor: [-2.9, 2.9]
+
+output: outputs/figures/ch04/figure_4_6.png
