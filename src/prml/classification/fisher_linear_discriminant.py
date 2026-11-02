@@ -34,5 +34,47 @@ class FisherLinearDiscriminant:
         self._n_features = None
         self.within_class_scatter_ = None
 
-    def fit(features, targets):
-        pass
+    def fit(self, features, targets):
+        """Estimate the Fisher projection direction
+        Parameters
+        ----------
+        features : array_like of shape (n_samples, n_features)
+            Training observations.
+        targets : array_like of shape (n_samples,)
+            Binary class labels.
+
+        Returns
+        -------
+        FisherLinearDiscriminant
+            Fitted discriminant.
+        """
+        self.classes_ = np.unique(targets)
+
+        if self.classes_.size != 2:
+            raise ValueError("FisherLinearDiscriminant requires exactly two classes")
+        class_features = [
+            features[targets == class_label] for class_label in self.classes_
+        ]
+        self.class_means = np.vstack(
+            [observations.mean(axis=0) for observations in class_features]
+        )
+        number_of_features = features.shape[1]
+        within_class_scatter = np.zeros(
+            (number_of_features, number_of_features), dtype=float
+        )
+        for observations, class_mean in zip(class_features, self.class_means):
+            centered = observations - class_mean
+            within_class_scatter = centered.T @ centered
+        self.within_class_scatter_ = within_class_scatter
+        regularized_scatter = within_class_scatter + self.regularization * np.eye(
+            number_of_features
+        )
+        mean_difference = self.class_means[1] - self.class_means[0]
+        direction = np.linalg.solve(regularized_scatter, mean_difference)
+        direction_norm = np.linalg.norm(direction)
+        if np.isclose(direction_norm, 0.0):
+            raise ValueError("the fitted Fisher direction has zero length")
+        self.direction_ = direction / direction_norm
+        self._n_features = number_of_features
+
+        return self
