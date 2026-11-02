@@ -9,7 +9,26 @@ from prml.utils.random import create_rng
 
 
 def create_data(config, rng):
-    pass
+    data_config = config["data"]
+    covariance = np.asarray(data_config["covariance"], dtype=float)
+    blue_points = rng.multivariate_normal(
+        mean=data_config["blue_mean"],
+        cov=covariance,
+        size=data_config["class_size"],
+    )
+    red_points = rng.multivariate_normal(
+        mean=data_config["red_mean"],
+        cov=covariance,
+        size=data_config["class_size"],
+    )
+    features = np.concatenate((blue_points, red_points), axis=0)
+    targets = np.concatenate(
+        (
+            np.zeros(blue_points.shape[0], dtype=int),
+            np.ones(red_points.shape[1], dtype=int),
+        )
+    )
+    return features, targets
 
 
 def class_means(features, targets):
@@ -43,6 +62,8 @@ def draw_projection_histograms(
 
 def create_figure(config, rng):
     features, targets = create_data(config=config, rng=rng)
+    for feature, target in zip(features, targets):
+        print(feature, target)
     means = class_means(features=features, targets=targets)
     mean_direction_unit = normalize(means[1] - means[0])
     model = FisherLinearDiscriminant()
