@@ -25,14 +25,17 @@ def create_data(config, rng):
     targets = np.concatenate(
         (
             np.zeros(blue_points.shape[0], dtype=int),
-            np.ones(red_points.shape[1], dtype=int),
+            np.ones(red_points.shape[0], dtype=int),
         )
     )
     return features, targets
 
 
 def class_means(features, targets):
-    pass
+    classes = np.unique(targets)
+    return np.vstack(
+        ([features[targets == class_label].mean(axis=0) for class_label in classes]),
+    )
 
 
 def normalize(vector):
@@ -65,6 +68,7 @@ def create_figure(config, rng):
     for feature, target in zip(features, targets):
         print(feature, target)
     means = class_means(features=features, targets=targets)
+    print(means[0], means[1])
     mean_direction_unit = normalize(means[1] - means[0])
     model = FisherLinearDiscriminant()
     model.fit(features, targets)
