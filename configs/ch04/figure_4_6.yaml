@@ -2,10 +2,10 @@ seed: 123
 
 data:
   class_size: 100
-  blue_mean: [1, 2.8]
-  red_mean: [4, 1]
+  blue_mean: [0.5, 3]
+  red_mean: [3.5, 1.5]
   covariance:
-    - [1.25, 0.05]
+    - [1.5, 0.05]
     - [0.05, 0.20]
 
 plot:
