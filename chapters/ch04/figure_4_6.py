@@ -29,7 +29,7 @@ def configure_axis(axis, config):
     pass
 
 
-def draw_prjection_histograms(
+def draw_projection_histograms(
     axis,
     features,
     targets,
@@ -51,6 +51,30 @@ def create_figure(config, rng):
     for axis in axes:
         draw_data(axis=axis, features=features, targets=targets, config=config)
         configure_axis(axis=axis, config=config)
+
+    draw_projection_histograms(
+        axis=axes[0],
+        features=features,
+        targets=targets,
+        class_mean_values=means,
+        direction=mean_direction_unit,
+        anchor=config["plot"]["mean_projection_anchor"],
+        config=config,
+    )
+
+    draw_projection_histograms(
+        axis=axes[1],
+        features=features,
+        targets=targets,
+        class_mean_values=means,
+        direction=model.direction_,
+        anchor=config["plot"]["fisher_projection_anchor"],
+        config=config,
+    )
+
+    axes[0].set_title("Projection onto the line joining means")
+    axes[1].set_title("Fisher linear discriminant")
+    return figure
 
 
 def run():
