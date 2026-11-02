@@ -48,6 +48,10 @@ class FisherLinearDiscriminant:
         FisherLinearDiscriminant
             Fitted discriminant.
         """
+        features, targets = self._validate_training_data(
+            features,
+            targets,
+        )
         self.classes_ = np.unique(targets)
 
         if self.classes_.size != 2:
@@ -78,3 +82,30 @@ class FisherLinearDiscriminant:
         self._n_features = number_of_features
 
         return self
+
+    @staticmethod
+    def _validate_training_data(features, targets):
+        features = np.asarray(features, dtype=float)
+        targets = np.asarray(targets)
+
+        if features.ndim != 2:
+            raise ValueError("features must be two-dimensional")
+
+        if targets.ndim != 1:
+            raise ValueError("targets must be one-dimensional")
+
+        if features.shape[0] != targets.size:
+            raise ValueError(
+                "features and targets must have the same number of samples"
+            )
+
+        if features.shape[0] == 0:
+            raise ValueError("training data must not be empty")
+
+        if features.shape[1] == 0:
+            raise ValueError("features must contain at least one feature")
+
+        if not np.all(np.isfinite(features)):
+            raise ValueError("features must contain only finite values")
+
+        return features, targets
