@@ -83,6 +83,41 @@ class FisherLinearDiscriminant:
 
         return self
 
+    def transform(self, features):
+        """Project observations onto the Fisher direction.
+
+        Parameters
+        ----------
+        features : array_like of shape (n_samples, n_features)
+            Observations to project.
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_samples,)
+            One-dimensional projected values.
+        """
+        features = self._validate_prediction_data(features)
+        return features @ self.direction_
+
+    def fit_transform(self, features, targets):
+        """Fit the discriminant and project the training data."""
+        return self.fit(features, targets).transform(features)
+
+    def fisher_criterion(self):
+        """Return the Fisher separation criterion for the fitted direction."""
+        if self.direction_ is None:
+            raise RuntimeError("fit must be called before fisher_criterion")
+
+        projected_means = self.class_means_ @ self.direction_
+        numerator = (projected_means[1] - projected_means[0]) ** 2
+
+        denominator = self.direction_ @ self.within_class_scatter_ @ self.direction_
+
+        if np.isclose(denominator, 0.0):
+            return np.inf
+
+        return numerator / denominator
+
     @staticmethod
     def _validate_training_data(features, targets):
         features = np.asarray(features, dtype=float)
@@ -109,3 +144,20 @@ class FisherLinearDiscriminant:
             raise ValueError("features must contain only finite values")
 
         return features, targets
+
+    def _validate_prediction_data(self, features):
+        if self.direction_ is None:
+            raise RuntimeError("fit must be called before transform")
+
+        features = np.asarray(features, dtype=float)
+
+        if features.ndim != 2:
+            raise ValueError("features must be two-dimensional")
+
+        if features.shape[1] != self._n_features:
+            raise ValueError(f"features must contain {self._n_features} columns")
+
+        if not np.all(np.isfinite(features)):
+            raise ValueError("features must contain only finite values")
+
+        return features
