@@ -231,9 +231,7 @@ def create_figure(config):
 def run():
     config = load_config(CONFIGS_DIR / "ch04/figure_4_7.yaml")
 
-    rng = create_rng(seed=config["seed"])
-
-    figure = create_figure()
+    figure = create_figure(config)
 
     output = save_figure(
         figure,
