@@ -1,1 +1,61 @@
+data:
+  features:
+    # First misclassified red point.
+    - [0.24, 0.72]
+
+    # Second misclassified red point.
+    - [0.46, 0.30]
+
+    # Remaining red points. 0
+    - [0.94, 0.90]
+    - [0.37, -0.48]
+    - [0.66, -0.89]
+
+    # Blue points. 1
+    - [-0.75, 0.95]
+    - [-0.78, 0.60]
+    - [-0.55, 0.64]
+    - [-0.42, 0.72]
+    - [-0.10, -0.20]
+
+  targets:
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - -1
+    - -1
+    - -1
+    - -1
+    - -1
+
+model:
+  learning_rate: 1.0
+  initial_weights: [-0.40, -0.90]
+  max_epochs: 100
+
+plot:
+  x_min: -1.0
+  x_max: 1.0
+  y_min: -1.0
+  y_max: 1.0
+  ticks: [-1.0, -0.5, 0.0, 0.5, 1.0]
+  line_points: 200
+  red_color: red
+  blue_color: blue
+  marker_size: 48
+
+  boundary_color: black
+  boundary_line_width: 1.5
+
+  weight_color: black
+  update_color: red
+  arrow_line_width: 1.6
+  arrow_head_size: 14
+
+  highlight_color: "#00dd22"
+  highlight_size: 180
+  highlight_line_width: 1.5
+
 output: outputs/figures/ch04/figure_4_7.png
