@@ -141,6 +141,11 @@ class PerceptronClassifier:
 
         return np.column_stack(np.ones(features.shape[0]), features)
 
+    def decision_function(self, features):
+        features = self._validate_prediction_data(features)
+        design_matrix = self._create_design_matrix(features)
+        return design_matrix @ self._weights
+
     @staticmethod
     def _validate_training_data(features, targets):
         features = np.asarray(features, dtype=float)
@@ -167,3 +172,20 @@ class PerceptronClassifier:
             raise ValueError("features must contain only finite values")
 
         return features, targets
+
+    def _validate_prediction_data(self, features):
+        if self._weights is None:
+            raise RuntimeError("fit must be called before prediction")
+
+        features = np.asarray(features, dtype=float)
+
+        if features.ndim != 2:
+            raise ValueError("features must be two-dimensional")
+
+        if features.shape[1] != self._n_features:
+            raise ValueError(f"features must contain {self._n_features} columns")
+
+        if not np.all(np.isfinite(features)):
+            raise ValueError("features must contain only finite values")
+
+        return features
