@@ -5,7 +5,6 @@ from prml.classification import PerceptronClassifier
 from prml.utils.config import load_config
 from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
 from prml.utils.plotting import save_figure
-from prml.utils.random import create_rng
 
 
 def create_data(config):
