@@ -100,7 +100,9 @@ class PerceptronClassifier:
         self.converged_ = False
         for epoch in range(self.max_epochs):
             number_of_updates = 0
-            for index, (design_row, target) in enumerate(zip(design_matrix, targets)):
+            for index, (design_row, target) in enumerate(
+                zip(design_matrix, signed_targets)
+            ):
                 score = np.dot(weights, design_row)
                 if score * target > 0:
                     continue
