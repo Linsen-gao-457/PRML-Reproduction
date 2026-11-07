@@ -186,7 +186,11 @@ def draw_panel(
 def create_figure(config):
     features, targets = create_data(config)
     model = PerceptronClassifier()
-    model.fit(featrues=features, targets=targets)
+    model.fit(
+        featrues=features,
+        targets=targets,
+        initial_weight=config["model"]["initial_weights"],
+    )
     if len(model.history_) != 2:
         raise RuntimeError(
             "Figure 4.7 expects exactly two perceptron updates, "
@@ -200,6 +204,7 @@ def create_figure(config):
         features=features,
         targets=targets,
         weights=first_update["weights_before"],
+        update_record=first_update,
         config=config,
     )
     draw_panel(
