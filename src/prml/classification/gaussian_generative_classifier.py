@@ -52,7 +52,7 @@ class GaussianGenerativeClassifier:
             Fitted classifier.
         """
         X = np.asarray(X, dtype=float)
-        Y = np.asarray(Y, dtype=float)
+        Y = np.asarray(Y)
         if X.ndim != 2:
             raise ValueError("X must be a two-dimensional array.")
         n_samples, m_features = X.shape
@@ -69,7 +69,7 @@ class GaussianGenerativeClassifier:
         self.classes_ = classes
         self.k_classes_ = len(classes)
         self.m_features_ = m_features
-        counts = np.bincount(Y, minlength=self.k_classes_)
+        counts = np.bincount(index, minlength=self.k_classes_)
         self.priors_ = counts / n_samples
         self.means_ = np.stack(
             ([X[index == k].mean(axis=0) for k in range(self.k_classes_)]),
@@ -90,7 +90,21 @@ class GaussianGenerativeClassifier:
         return self
 
     def predict_proba(self, X):
-        pass
+        """compute posterior class probability
+
+        Args:
+            X (ndarray): shape (n_samples, k_classes)
+            posterior probability in "classes" order
+        """
+        if not hasattr(self, "_coef"):
+            raise RuntimeError("Call fit before predicting")
+        X = np.asarray(X, dtype=float)
+        if X.ndim != 2 or X.shape[1] != self.m_features_:
+            raise ValueError(
+                f"X must be two-dimensional with {self.m_features_} features."
+            )
+        if not np.isfinite(X).all():
+            raise ValueError("X must contain only finite values.")
 
     def predict(self, X):
         pass
