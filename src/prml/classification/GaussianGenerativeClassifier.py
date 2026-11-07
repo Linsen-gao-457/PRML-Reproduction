@@ -37,7 +37,57 @@ class GaussianGenerativeClassifier:
         self.intercept_ = None
 
     def fit(self, X, Y):
-        pass
+        """Estimate parameters mean, covatiance, priors
+
+        Args:
+        -------
+        X : array-like of shape (n_samples, m_features)
+            Finite training features.
+        y : array-like of shape (n_samples,)
+            Training class labels.
+
+        Returns
+        -------
+        self : GaussianGenerativeClassifier
+            Fitted classifier.
+        """
+        X = np.asarray(X, dtype=float)
+        Y = np.asarray(Y, dtype=float)
+        if X.ndim != 2:
+            raise ValueError("X must be a two-dimensional array.")
+        n_samples, m_features = X.shape
+        if n_samples == 0 or m_features == 0:
+            raise ValueError("X must contain samples and features.")
+        if Y.shape != (n_samples,):
+            raise ValueError("Y must have shape (n_samples,).")
+        if not np.isfinite(X).all():
+            raise ValueError("X must contain only finite values.")
+        classes, index = np.unique(Y, return_inverse=True)
+        if len(classes) < 2:
+            raise ValueError("Training data must contain at least two classes.")
+
+        self.classes_ = classes
+        self.k_classes_ = len(classes)
+        self.m_features_ = m_features
+        counts = np.bincount(Y, minlength=self.k_classes_)
+        self.priors_ = counts / n_samples
+        self.means_ = np.stack(
+            ([X[index == k].mean(axis=0) for k in range(self.k_classes_)]),
+            axis=0,
+            dtype=float,
+        )
+        centered = X - self.means_[index]
+        self.covariance_ = centered.T @ centered / n_samples
+        self.covariance_ += self.reg * np.eye(self.m_features_)
+        self.coef_ = np.linalg.solve(self.covariance_, self.means_.T).T
+        self.intercept_ = np.asarray(
+            [
+                -0.5 * self.means_[k] @ self.coef_ + np.log(self.priors_[k])
+                for k in range(self.k_classes_)
+            ],
+            dtype=float,
+        )
+        return self
 
     def predict_proba(self, X):
         pass
