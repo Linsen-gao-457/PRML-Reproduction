@@ -51,9 +51,8 @@ The experiment scripts reuse the numerical components under
 `src/prml/classification/`:
 
 - `LeastSquaresClassifier` fits linear class scores using least squares.
-- `LogisticRegression` learns binary conditional class probabilities.
 - `MulticlassLogisticRegression` learns multiclass conditional probabilities
-  using the softmax function.
+  using the softmax function and also supports two classes.
 - `FisherLinearDiscriminant` finds a projection that separates two classes
   relative to their within-class variation.
 - `PerceptronClassifier` learns a linear decision boundary through sequential
