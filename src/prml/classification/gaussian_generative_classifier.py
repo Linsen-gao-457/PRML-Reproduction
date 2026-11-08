@@ -82,7 +82,7 @@ class GaussianGenerativeClassifier:
         self.coef_ = np.linalg.solve(self.covariance_, self.means_.T).T
         self.intercept_ = np.asarray(
             [
-                -0.5 * self.means_[k] @ self.coef_ + np.log(self.priors_[k])
+                -0.5 * (self.means_[k] @ self.coef_[k]) + np.log(self.priors_[k])
                 for k in range(self.k_classes_)
             ],
             dtype=float,
@@ -101,7 +101,7 @@ class GaussianGenerativeClassifier:
         probabilities : ndarray of shape (n_samples, k_classes)
             Posterior probabilities in ``classes_`` order.
         """
-        if not hasattr(self, "_coef"):
+        if self.coef_ is None:
             raise RuntimeError("Call fit before predicting")
         X = np.asarray(X, dtype=float)
         if X.ndim != 2 or X.shape[1] != self.m_features_:
@@ -128,7 +128,7 @@ class GaussianGenerativeClassifier:
         labels : ndarray of shape (n_samples,)
             Predicted original class labels.
         """
-        prob = self.predict(X)
+        prob = self.predict_proba(X)
         indices = np.argmax(prob, axis=1)
         return self.classes_[indices]
 
@@ -147,7 +147,7 @@ class GaussianGenerativeClassifier:
         Y : ndarray of shape (n_samples,)
              Generated labels using the original class labels.
         """
-        if not hasattr(self, "coef_"):
+        if self.coef_ is None:
             raise RuntimeError("Call fit before sampling.")
 
         if (
