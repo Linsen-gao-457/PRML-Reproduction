@@ -132,5 +132,38 @@ class GaussianGenerativeClassifier:
         indices = np.argmax(prob, axis=1)
         return self.classes_[indices]
 
-    def sample(self, n_samples, random_state=None):
-        pass
+    def sample(self, n_samples=100, random_state=None):
+        """Generate a synthetic dataset from the fitted model.
+         Parameters
+         ----------
+         n_samples : int, default=100
+             Positive number of samples to generate.
+         random_state : int or None, default=None
+             Seed for reproducible random sampling.
+         Returns
+         -------
+         X : ndarray of shape (n_samples, m_features)
+             Generated feature vectors.
+        Y : ndarray of shape (n_samples,)
+             Generated labels using the original class labels.
+        """
+        if not hasattr(self, "coef_"):
+            raise RuntimeError("Call fit before sampling.")
+
+        if (
+            isinstance(n_samples, (bool, np.bool_))
+            or not isinstance(n_samples, (int, np.integer))
+            or n_samples < 1
+        ):
+            raise ValueError("n_samples must be a positive integer.")
+        rng = np.random.default_rng(random_state)
+        class_indices = rng.choice(self.k_classes_, size=n_samples, p=self.priors_)
+        signal = self.means_[class_indices]
+        noise = rng.multivariate_normal(
+            np.zeros(self.m_features_),
+            cov=self.covariance_,
+            size=n_samples,
+        )
+        X = signal + noise
+        Y = self.classes_[class_indices]
+        return X, Y
