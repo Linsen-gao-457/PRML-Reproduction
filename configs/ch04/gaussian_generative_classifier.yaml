@@ -1,0 +1,35 @@
+data:
+  means:
+    - [-2.0, -1.0]
+    - [2.0, -1.0]
+    - [0.0, 2.0]
+  covariance:
+    - [1.0, 0.35]
+    - [0.35, 0.8]
+  priors: [0.3, 0.4, 0.3]
+  train_samples: 600
+  test_samples: 300
+  train_seed: 42
+  test_seed: 43
+
+model:
+  reg: 1.0e-6
+
+sampling:
+  n_samples: 600
+  seed: 44
+
+plot:
+  figsize: [15, 4.5]
+  grid_points: 250
+  padding: 0.5
+  colors: ["tab:blue", "tab:orange", "tab:green"]
+  region_alpha: 0.18
+  confidence_levels: 21
+  confidence_cmap: viridis
+  marker_size: 15
+  generated_alpha: 0.65
+  mean_marker_size: 90
+  dpi: 150
+
+output: outputs/figures/ch04/gaussian_generative_classifier.png
