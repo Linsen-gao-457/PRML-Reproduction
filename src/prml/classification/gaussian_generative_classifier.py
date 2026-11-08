@@ -116,7 +116,21 @@ class GaussianGenerativeClassifier:
         return exp_scores / exp_scores.sum(axis=1, keepdims=True)
 
     def predict(self, X):
-        pass
+        """Predict the most probable class.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, m_features)
+            Input features.
+
+        Returns
+        -------
+        labels : ndarray of shape (n_samples,)
+            Predicted original class labels.
+        """
+        prob = self.predict(X)
+        indices = np.argmax(prob, axis=1)
+        return self.classes_[indices]
 
     def sample(self, n_samples, random_state=None):
         pass
