@@ -35,8 +35,8 @@ class LeastSquaresClassifier:
     def predict(self, features):
         features = self._validate_prediction_data(features)
         scores = self.decision_function(features)
-        indice = np.argmax(scores)
-        return self.classes_[indice]
+        indices = np.argmax(scores, axis=1)
+        return self.classes_[indices]
 
     def decision_function(self, features):
         design_matrix = self._create_design_matrix(features)
@@ -88,8 +88,8 @@ class LeastSquaresClassifier:
         if features.ndim != 2:
             raise ValueError("features must be two-dimensional")
 
-        if features.shape[1] != self._n_features:
-            raise ValueError(f"features must contain {self._n_features} columns")
+        if features.shape[1] != self.n_features:
+            raise ValueError(f"features must contain {self.n_features} columns")
 
         if not np.all(np.isfinite(features)):
             raise ValueError("features must contain only finite values")

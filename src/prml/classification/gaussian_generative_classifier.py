@@ -111,6 +111,7 @@ class GaussianGenerativeClassifier:
         if not np.isfinite(X).all():
             raise ValueError("X must contain only finite values.")
         scores = X @ self.coef_.T + self.intercept_
+        # make the softmax to be stable
         scores -= np.max(scores, axis=1, keepdims=True)
         exp_scores = np.exp(scores)
         return exp_scores / exp_scores.sum(axis=1, keepdims=True)

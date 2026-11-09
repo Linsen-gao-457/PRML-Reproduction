@@ -74,12 +74,6 @@ def create_prediction_grid(config):
     return x_grid, y_grid, grid_features
 
 
-def predict_least_squares(model, features):
-    scores = model.decision_function(features)
-    class_indices = np.argmax(scores, axis=1)
-    return model.classes_[class_indices]
-
-
 def draw_points(axis, features, targets, config):
     plot_config = config["plot"]
 
@@ -129,7 +123,6 @@ def draw_decision_regions(
     features,
     targets,
     model,
-    prediction_function,
     title,
     config,
 ):
@@ -137,10 +130,7 @@ def draw_decision_regions(
 
     x_grid, y_grid, grid_features = create_prediction_grid(config)
 
-    predictions = prediction_function(
-        model,
-        grid_features,
-    )
+    predictions = model.predict(grid_features)
     prediction_indices = np.searchsorted(
         model.classes_,
         predictions,
@@ -228,7 +218,6 @@ def create_figure(config, rng):
         features=features,
         targets=targets,
         model=least_squares,
-        prediction_function=predict_least_squares,
         title="Least-squares classifier",
         config=config,
     )
@@ -238,7 +227,6 @@ def create_figure(config, rng):
         features=features,
         targets=targets,
         model=logistic_regression,
-        prediction_function=lambda model, points: model.predict(points),
         title="Multiclass logistic regression",
         config=config,
     )

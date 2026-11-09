@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from prml.classification import LeastSquaresClassifier, LogisticRegression
+from prml.classification import LeastSquaresClassifier, MulticlassLogisticRegression
 from prml.utils.config import load_config
 from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
 from prml.utils.plotting import save_figure
@@ -48,7 +48,9 @@ def least_squares_boundary(model, x):
 
 
 def logistic_regression_boundary(model, x):
-    return -(model.intercept_ + model.coef_[0] * x) / model.coef_[1]
+    slope_difference = model.coef_[1] - model.coef_[0]
+    intercept_difference = model.intercept_[1] - model.intercept_[0]
+    return -(intercept_difference + slope_difference[0] * x) / slope_difference[1]
 
 
 def draw_panel(axis, features, targets, least_squares, logistic_regression, config):
@@ -108,11 +110,11 @@ def create_figure(config, rng):
         (targets, np.zeros(outliers.shape[0], dtype=int))
     )
     least_squares = LeastSquaresClassifier()
-    logistic_regression = LogisticRegression()
+    logistic_regression = MulticlassLogisticRegression()
     least_squares.fit(features, targets)
     logistic_regression.fit(features, targets)
     least_squares_with_outlier = LeastSquaresClassifier()
-    logistic_regression_with_outlier = LogisticRegression()
+    logistic_regression_with_outlier = MulticlassLogisticRegression()
     least_squares_with_outlier.fit(
         features_with_outliers,
         targets_with_outliers,

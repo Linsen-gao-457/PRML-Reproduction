@@ -89,7 +89,7 @@ def create_figure(model, X_test, y_test, X_generated, y_generated, config):
         yy,
         regions,
         levels=np.arange(model.k_classes_ + 1) - 0.5,
-        cmap=ListedColormap(colors[:model.k_classes_]),
+        cmap=ListedColormap(colors[: model.k_classes_]),
         alpha=config["region_alpha"],
     )
     confidence = axes[1].contourf(
@@ -168,8 +168,8 @@ def run():
         X_train, y_train
     )
 
-    probabilities = model.predict_proba(X_test)
-    predictions = model.predict(X_test)
+    # probabilities = model.predict_proba(X_test)
+    # predictions = model.predict(X_test)
     X_generated, y_generated = model.sample(
         n_samples=config["sampling"]["n_samples"],
         random_state=config["sampling"]["seed"],
