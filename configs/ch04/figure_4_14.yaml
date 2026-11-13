@@ -1,0 +1,12 @@
+target:
+  slope: 20.0
+  bias: 4.0
+
+plot:
+  z_range: [-2.0, 4.0]
+  grid_points: 600
+  figure_size: [10, 4]
+  density_limits: [0.0, 0.8]
+  negative_log_limits: [0.0, 40.0]
+
+output: outputs/figures/ch04/figure_4_14.png
