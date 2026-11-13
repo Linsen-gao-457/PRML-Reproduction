@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.special import expit, ndtr
+from scipy.special import erf, expit, ndtr
 
 from prml.utils.config import load_config
 from prml.utils.path import CONFIGS_DIR, PROJECT_ROOT
@@ -15,7 +15,7 @@ def create_figure(config):
     a0 = plot["example_score"]
     theta = np.linspace(lower, a0, plot["grid_points"])
     normalizer = np.sqrt(2 * np.pi)
-    probability = ndtr(a0)
+    probability = 0.5 * (1 + erf(a0 / np.sqrt(2)))
 
     figure, (left, right) = plt.subplots(
         1, 2, figsize=plot["figure_size"], layout="constrained"
@@ -34,8 +34,9 @@ def create_figure(config):
     )
 
     # Match the slopes of the probit and logistic curves at zero.
+    probit = 0.5 * (1 + erf(a / np.sqrt(2)))
     logistic_scale = 4 / normalizer
-    right.plot(a, ndtr(a), color="tab:blue", label=r"Probit $\Phi(a)$")
+    right.plot(a, probit, color="tab:blue", label=r"Probit $\Phi(a)$")
     right.plot(
         a,
         expit(logistic_scale * a),
