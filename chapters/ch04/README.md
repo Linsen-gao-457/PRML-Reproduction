@@ -24,13 +24,14 @@ configurations.
 
 ## Implemented figures
 
-| Experiment | Figure or demonstration | Concept | Configuration | Output |
-| ---------: | :---------------------: | ------- | ------------- | ------ |
-| `1` | Figure 4.4 | Effect of outliers on least-squares classification and logistic regression | `configs/ch04/figure_4_4.yaml` | `outputs/figures/ch04/figure_4_4.png` |
-| `2` | Figure 4.5 | Three-class decision regions for least-squares classification and multinomial logistic regression | `configs/ch04/figure_4_5.yaml` | `outputs/figures/ch04/figure_4_5.png` |
-| `3` | Figure 4.6 | Projection onto the line joining class means compared with Fisher's linear discriminant | `configs/ch04/figure_4_6.yaml` | `outputs/figures/ch04/figure_4_6.png` |
-| `4` | Figure 4.7 | Sequential perceptron updates and the resulting decision boundaries | `configs/ch04/figure_4_7.yaml` | `outputs/figures/ch04/figure_4_7.png` |
-| `5` | Gaussian generative classifier demo | Multiclass Gaussian classification, posterior confidence, and sampling from the fitted model | `configs/ch04/gaussian_generative_classifier.yaml` | `outputs/figures/ch04/gaussian_generative_classifier.png` |
+| Experiment |       Figure or demonstration       | Concept                                                                                           | Configuration                                      | Output                                                    |
+| ---------: | :---------------------------------: | ------------------------------------------------------------------------------------------------- | -------------------------------------------------- | --------------------------------------------------------- |
+|        `1` |             Figure 4.4              | Effect of outliers on least-squares classification and logistic regression                        | `configs/ch04/figure_4_4.yaml`                     | `outputs/figures/ch04/figure_4_4.png`                     |
+|        `2` |             Figure 4.5              | Three-class decision regions for least-squares classification and multinomial logistic regression | `configs/ch04/figure_4_5.yaml`                     | `outputs/figures/ch04/figure_4_5.png`                     |
+|        `3` |             Figure 4.6              | Projection onto the line joining class means compared with Fisher's linear discriminant           | `configs/ch04/figure_4_6.yaml`                     | `outputs/figures/ch04/figure_4_6.png`                     |
+|        `4` |             Figure 4.7              | Sequential perceptron updates and the resulting decision boundaries                               | `configs/ch04/figure_4_7.yaml`                     | `outputs/figures/ch04/figure_4_7.png`                     |
+|        `5` | Gaussian generative classifier demo | Multiclass Gaussian classification, posterior confidence, and sampling from the fitted model      | `configs/ch04/gaussian_generative_classifier.yaml` | `outputs/figures/ch04/gaussian_generative_classifier.png` |
+|        `6` |       Probit activation demo        | Gaussian threshold probability and comparison with the logistic sigmoid                           | `configs/ch04/probit_activation.yaml`              | `outputs/figures/ch04/probit_activation.png`              |
 
 For example:
 
@@ -80,3 +81,8 @@ The demo plots two input features. To change the number of classes, update
 the rows in `data.means`, provide matching `data.priors` that sum to one, and
 configure at least one plot color per class. Use enough training observations
 to represent every configured class.
+
+For the probit activation demo, use `plot.score_range` and
+`plot.example_score` to choose the horizontal range and the score used to
+shade the Gaussian threshold probability. The demo plots the curves without
+fitting a regression model.
