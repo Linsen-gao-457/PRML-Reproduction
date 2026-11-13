@@ -20,7 +20,7 @@ def create_figure(config):
     def f(z):
         return np.exp(log_f(z))
 
-    gaussian = LaplaceApproximation()(lambda z: f(z), initial=[0.0])
+    gaussian = LaplaceApproximation()(lambda z: f(z[0]), initial=[0.0])
     normalization, _ = quad(f, -np.inf, np.inf)
     z_min, z_max = plot["z_range"]
     z = np.linspace(z_min, z_max, plot["grid_points"])
