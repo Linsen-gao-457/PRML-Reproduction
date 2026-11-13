@@ -1,0 +1,7 @@
+plot:
+  score_range: [-4.0, 4.0]
+  example_score: 0.75
+  grid_points: 600
+  figure_size: [10, 4]
+
+output: outputs/figures/ch04/probit_activation.png
