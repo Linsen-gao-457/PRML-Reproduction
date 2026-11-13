@@ -8,13 +8,13 @@ class LaplaceApproximation:
     """Build a local Gaussian approximation to a continuous density."""
 
     def __call__(self, f, initial):
-        """Approximate the density proportional to exp(-f(z)).
+        """Approximate the density proportional to f(z).
 
         Parameters
         ----------
         f : callable
-            Negative log target density. Takes a vector of shape (m,)
-            and returns a scalar.
+            Unnormalized target density. Takes a vector of shape (m,)
+            and must return a finite, positive scalar at evaluated points.
         initial : array-like of shape (m,)
             Starting point for finding a mode.
 
@@ -30,12 +30,18 @@ class LaplaceApproximation:
         if not np.isfinite(initial).all():
             raise ValueError("initial must contain only finite values")
 
-        result = minimize(f, initial, method="BFGS", jac="3-point")
+        def objective(z):
+            value = f(z)
+            if np.ndim(value) != 0 or not np.isfinite(value) or value <= 0:
+                raise ValueError("f(z) must return a finite, positive scalar")
+            return -np.log(value)
+
+        result = minimize(objective, initial, method="BFGS", jac="3-point")
         if not result.success:
             raise RuntimeError(f"Could not find a mode: {result.message}")
         mode = result.x
         m = mode.size
-        f0 = f(mode)
+        f0 = objective(mode)
 
         # Central finite differences estimate the Hessian at the mode.
         step = np.finfo(float).eps ** 0.25 * np.maximum(1.0, np.abs(mode))
@@ -43,15 +49,17 @@ class LaplaceApproximation:
         hessian = np.empty((m, m))
 
         for i, di in enumerate(offsets):
-            hessian[i, i] = (f(mode + di) - 2 * f0 + f(mode - di)) / step[i] ** 2
+            hessian[i, i] = (
+                objective(mode + di) - 2 * f0 + objective(mode - di)
+            ) / step[i] ** 2
 
             for j in range(i):
                 dj = offsets[j]
                 mixed = (
-                    f(mode + di + dj)
-                    - f(mode + di - dj)
-                    - f(mode - di + dj)
-                    + f(mode - di - dj)
+                    objective(mode + di + dj)
+                    - objective(mode + di - dj)
+                    - objective(mode - di + dj)
+                    + objective(mode - di - dj)
                 ) / (4 * step[i] * step[j])
                 hessian[i, j] = hessian[j, i] = mixed
 
